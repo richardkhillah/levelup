@@ -21,6 +21,8 @@ def create_app(config_name):
     db.init_app(app)
     mail.init_app(app)
 
-    # register blueprints (views, )
+    # register blueprints (views, errors, etc)
+    from .main import main as main_blueprint
+    app.register_blueprint(main_blueprint)
 
     return app
