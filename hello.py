@@ -35,10 +35,10 @@ class Role(db.Model):
     __tablename__ = 'roles'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True)
-    users = db.relationship('User', backref='role')
+    users = db.relationship('User', backref='role', lazy='dynamic')
 
     def __repr__(self):
-        return '<Role %>' % self.name
+        return '<Role %r>' % self.name
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -47,7 +47,7 @@ class User(db.Model):
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
 
     def __repr__(self):
-        return '<User %>' % self.username
+        return '<User %r>' % self.username
 
 
 @app.route('/', methods=['GET', 'POST'])
