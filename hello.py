@@ -5,6 +5,7 @@ from flask_script import Manager
 from flask_bootstrap import Bootstrap
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 
 import os
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -20,6 +21,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 bootstrap = Bootstrap(app)
 moment = Moment(app)
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 
 from flask_wtf import FlaskForm
