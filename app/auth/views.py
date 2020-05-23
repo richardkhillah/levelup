@@ -3,6 +3,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 from . import auth
 from .. import db
 from .forms import LoginForm, RegistrationForm, UpdatePasswordForm
+from .forms import ForgotPasswordForm, ResetPasswordForm
 from ..models import User
 from ..email import send_email
 
@@ -87,3 +88,32 @@ def change_password():
             return redirect(url_for('main.index'))
         flash('Unable to update password.')
     return render_template('auth/change_password.html', form=form)
+
+@auth.route('/forgot-password', methods=['GET', 'POST'])
+def forgot_password():
+    if not current_user.is_anonymous:
+        return redirect(url_for('main.index'))
+    form = ForgotPasswordForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        if user:
+            reset_token = user.generate_reset_password_token()
+            send_email(user.email, 'Reset Password', 'auth/email/reset_password',
+                    user=user, token=reset_token)
+        flash('An email with instructions to reset your password has been '
+                'sent to you.')
+        return redirect(url_for('auth.login'))
+    return render_template('auth/forgot_password.html', form=form)
+
+@auth.route('reset-password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    if not current_user.is_anonymous:
+        return redirect(url_for('main.index'))
+    form = ResetPasswordForm()
+    if form.validate_on_submit():
+        if User.reset_password(token, form.password.data):
+            flash('Your password has been reset.')
+            return redirect(url_for('auth.login'))
+        else:
+            return redirect(url_for('main.index'))
+    return render_template('auth/reset_password.html', form=form)
