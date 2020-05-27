@@ -17,7 +17,7 @@ migrate = Migrate(app, db)
 def make_shell_context():
     return dict(db=db, User=User, Role=Role)
 
-from app.models import Role, User
+from app.models.models import Role, User
 
 @app.cli.command()
 @click.argument('test_names', nargs=-1)
