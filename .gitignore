@@ -4,3 +4,5 @@ venv
 *.sqlite
 
 references.md
+
+.env
