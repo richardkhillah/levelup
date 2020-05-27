@@ -4,7 +4,7 @@ from datetime import datetime
 from . import main
 from .forms import NameForm
 from .. import db
-from ..models import User
+from ..models.models import User
 from ..email import send_email
 
 @main.route('/', methods=['GET', 'POST'])
