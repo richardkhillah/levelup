@@ -3,7 +3,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 from . import auth
 from .. import db
 from .forms import LoginForm, RegistrationForm, UpdatePasswordForm
-from .forms import ForgotPasswordForm, ResetPasswordForm
+from .forms import ForgotPasswordForm, ResetPasswordForm, EmailChangeForm
 from ..models.models import User
 from ..email import send_email
 
@@ -117,3 +117,10 @@ def reset_password(token):
         else:
             return redirect(url_for('main.index'))
     return render_template('auth/reset_password.html', form=form)
+
+@auth.route('/change-email', methods=['GET', 'POST'])
+def change_email():
+    form = EmailChangeForm()
+    if form.validate_on_submit():
+        pass
+    return render_template('auth/change_email.html', form=form)
