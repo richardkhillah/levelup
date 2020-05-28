@@ -1,7 +1,15 @@
 import unittest
+import time
+from app import create_app, db
 from app.models.models import User, AnonymousUser, Role, Permission
 
 class UserModelTestCase(unittest.TestCase):
+    def setUp(self):
+        pass
+
+    def tearDown(self):
+        pass
+
     def test_password_setter(self):
         u = User(password='cat')
         self.assertTrue(u.password_hash is not None)
@@ -20,6 +28,39 @@ class UserModelTestCase(unittest.TestCase):
         u = User(password='cat')
         u2 = User(password='cat')
         self.assertTrue(u.password_hash != u2.password_hash)
+
+    def test_valid_confirmation_token(self):
+        pass
+
+    def test_invalid_confirmation_token(self):
+        pass
+
+    def test_expired_confirmation_token(self):
+        pass
+
+    def test_valid_reset_token(self):
+        pass
+
+    def test_invalid_reset_token(self):
+        pass
+
+    def test_valid_email_change_token(self):
+        pass
+
+    def test_invalid_email_change_token(self):
+        pass
+
+    def test_duplicate_email_change_token(self):
+        pass
+
+    def test_user_roles(self):
+        pass
+
+    def test_moderator_role(self):
+        pass
+
+    def test_administrator_role(self):
+        pass
 
     def test_roles_and_permissions(self):
         Role.insert_roles()
