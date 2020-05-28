@@ -1,4 +1,4 @@
-from database import db
+from .. import db
 from sqlalchemy import func
 
 class BaseA(db.Model):
@@ -204,8 +204,8 @@ tm_dict = dict(
     SourceStat=SourceStat,
     FactoryStats=FactoryStats,
 
-    add_dummies=add_dummies,
-    add_towns=add_towns,
-    remove_towns=remove_towns,
-    remove_dummies=remove_dummies
+    # add_dummies=add_dummies,
+    # add_towns=add_towns,
+    # remove_towns=remove_towns,
+    # remove_dummies=remove_dummies
 )
