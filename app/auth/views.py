@@ -119,8 +119,28 @@ def reset_password(token):
     return render_template('auth/reset_password.html', form=form)
 
 @auth.route('/change-email', methods=['GET', 'POST'])
-def change_email():
+@login_required
+def change_email_request():
     form = EmailChangeForm()
     if form.validate_on_submit():
-        pass
+        if current_user.verify_password(form.password.data):
+            new_email = form.new_email.data
+            token = current_user.generate_change_email_token(email=new_email)
+            send_email(new_email, 'Change Email', 'auth/email/change_email',
+                    user=current_user, token=token)
+            flash('An email with instructions on how to confirm your change '
+                'of email has been sent to your new email')
+            return redirect(url_for('main.index'))
+        else:
+            flash('Invalid email or password')
     return render_template('auth/change_email.html', form=form)
+
+@auth.route('/change-email/<token>', methods=['GET', 'POST'])
+@login_required
+def change_email(token):
+    if current_user.change_email(token):
+        db.session.commit()
+        flash('Your email has been updated')
+    else:
+        flash('Invalid request')
+    return redirect(url_for('main.index'))
