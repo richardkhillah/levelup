@@ -105,13 +105,30 @@ class UserModelTestCase(unittest.TestCase):
         self.assertTrue(u1.email == 'drew@example.com')
 
     def test_user_roles(self):
-        pass
+        u = User(email='john@example.com', password='dog')
+        self.assertTrue(u.can(Permission.FOLLOW))
+        self.assertTrue(u.can(Permission.COMMENT))
+        self.assertTrue(u.can(Permission.WRITE_ARTICLES))
+        self.assertFalse(u.can(Permission.MODERATE_COMMENTS))
+        self.assertFalse(u.can(Permission.ADMINISTER))
 
     def test_moderator_role(self):
-        pass
+        role = Role.query.filter_by(name='Moderator').first()
+        u = User(email='john@example.com', password='dog', role=role)
+        self.assertTrue(u.can(Permission.FOLLOW))
+        self.assertTrue(u.can(Permission.COMMENT))
+        self.assertTrue(u.can(Permission.WRITE_ARTICLES))
+        self.assertTrue(u.can(Permission.MODERATE_COMMENTS))
+        self.assertFalse(u.can(Permission.ADMINISTER))
 
     def test_administrator_role(self):
-        pass
+        role = Role.query.filter_by(name='Administrator').first()
+        u = User(email='john@example.com', password='dog', role=role)
+        self.assertTrue(u.can(Permission.FOLLOW))
+        self.assertTrue(u.can(Permission.COMMENT))
+        self.assertTrue(u.can(Permission.WRITE_ARTICLES))
+        self.assertTrue(u.can(Permission.MODERATE_COMMENTS))
+        self.assertTrue(u.can(Permission.ADMINISTER))
 
     def test_roles_and_permissions(self):
         Role.insert_roles()
