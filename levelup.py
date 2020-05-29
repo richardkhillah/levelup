@@ -32,7 +32,7 @@ def test(test_names):
 
 #
 # comment this out if you fork this repo
-# 
+#
 @app.cli.command()
 @click.argument('commands', nargs=-1)
 def load(commands):
