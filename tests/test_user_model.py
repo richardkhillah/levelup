@@ -5,10 +5,16 @@ from app.models.models import User, AnonymousUser, Role, Permission
 
 class UserModelTestCase(unittest.TestCase):
     def setUp(self):
-        pass
+        self.app = create_app('testing')
+        self.app_context = self.app.app_context()
+        self.app_context.push()
+        db.create_all()
+        Role.insert_roles()
 
     def tearDown(self):
-        pass
+        db.session.remove()
+        db.drop_all()
+        self.app_context.pop()
 
     def test_password_setter(self):
         u = User(password='cat')
@@ -30,16 +36,37 @@ class UserModelTestCase(unittest.TestCase):
         self.assertTrue(u.password_hash != u2.password_hash)
 
     def test_valid_confirmation_token(self):
-        pass
+        u = User(password='cat')
+        db.session.add(u)
+        db.session.commit()
+        token = u.generate_confirmation_token()
+        self.assertTrue(u.confirm(token))
 
     def test_invalid_confirmation_token(self):
-        pass
+        u1 = User(password='cat')
+        u2 = User(password='dog')
+        db.session.add(u1)
+        db.session.add(u2)
+        db.session.commit()
+        token = u1.generate_confirmation_token()
+        self.assertFalse(u2.confirm(token))
 
     def test_expired_confirmation_token(self):
-        pass
+        u = User(password='cat')
+        db.session.add(u)
+        db.session.commit()
+        token = u.generate_confirmation_token(1)
+        time.sleep(2)
+        self.assertFalse(u.confirm(token))
 
     def test_valid_reset_token(self):
-        pass
+        u = User(password='cat')
+        db.session.add(u)
+        db.session.commit()
+        token = u.generate_reset_password_token()
+        self.assertTrue(User.reset_password(token, 'dog'))
+        self.assertTrue(u.verify_password('dog'))
+        self.assertFalse(u.verify_password('cat'))
 
     def test_invalid_reset_token(self):
         pass
