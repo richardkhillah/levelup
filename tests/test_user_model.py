@@ -95,7 +95,14 @@ class UserModelTestCase(unittest.TestCase):
         self.assertTrue(u2.email == 'susan@example.com')
 
     def test_duplicate_email_change_token(self):
-        pass
+        u1 = User(email='drew@example.com', password='cat')
+        u2 = User(email='susan@example.com', password='cat')
+        db.session.add(u1)
+        db.session.add(u2)
+        db.session.commit()
+        token = u1.generate_change_email_token('susan@example.com')
+        self.assertFalse(u1.change_email(token))
+        self.assertTrue(u1.email == 'drew@example.com')
 
     def test_user_roles(self):
         pass
