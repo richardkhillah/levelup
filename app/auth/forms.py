@@ -3,6 +3,7 @@ from wtforms import StringField, PasswordField, BooleanField, SubmitField
 from wtforms.validators import DataRequired, Email, Length, Regexp, EqualTo
 from wtforms import ValidationError
 from ..models.models import User
+from sqlalchemy import func
 
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(),
@@ -53,3 +54,12 @@ class ResetPasswordForm(FlaskForm):
         DataRequired(), EqualTo('password2', message='Passwords must match.')])
     password2 = PasswordField('Confirm password', validators=[DataRequired()])
     submit = SubmitField('Reset Password')
+
+class EmailChangeForm(FlaskForm):
+    new_email = StringField('New Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    submit = SubmitField('Submit')
+
+    def validate_email(self, field):
+        if User.query.filter(func.lower(User.email)==field.data.lower()).first():
+            raise ValidationError('Email already taken')
