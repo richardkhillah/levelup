@@ -69,7 +69,12 @@ class UserModelTestCase(unittest.TestCase):
         self.assertFalse(u.verify_password('cat'))
 
     def test_invalid_reset_token(self):
-        pass
+        u = User(password='cat')
+        db.session.add(u)
+        db.session.commit()
+        token = u.generate_reset_password_token()
+        self.assertFalse(User.reset_password(token + 'a', 'dog'))
+        self.assertTrue(u.verify_password('cat'))
 
     def test_valid_email_change_token(self):
         pass
