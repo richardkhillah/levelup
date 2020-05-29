@@ -77,7 +77,12 @@ class UserModelTestCase(unittest.TestCase):
         self.assertTrue(u.verify_password('cat'))
 
     def test_valid_email_change_token(self):
-        pass
+        u = User(email='drew@example.com', password='cat')
+        db.session.add(u)
+        db.session.commit()
+        token = u.generate_change_email_token('david@example.com')
+        self.assertTrue(u.change_email(token))
+        self.assertTrue(u.email == 'david@example.com')
 
     def test_invalid_email_change_token(self):
         pass
