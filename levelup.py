@@ -30,26 +30,25 @@ def test(test_names):
         tests = unittest.TestLoader().discover('tests')
     unittest.TextTestRunner(verbosity=2).run(tests)
 
-#
-# comment this out if you fork this repo
-#
 @app.cli.command()
 @click.argument('commands', nargs=-1)
 def load(commands):
+    """Create & destroy dummy db objects"""
     # https://click.palletsprojects.com/en/7.x/arguments/
     from devtools.load_users import load_dict
 
     def usage():
-        click.echo('Usage: flask load-users COMMAND...')
+        click.echo('Usage: flask load COMMAND...')
         click.echo("Try 'flask load-users help' for help.")
         click.echo('')
 
-    if commands:
-        for c in commands:
-            try:
-                load_dict[c]()
-            except:
-                usage()
-                click.echo("Error: No such command '{}'".format(c))
-    else:
+    if not commands:
         usage()
+        exit()
+
+    for c in commands:
+        try:
+            load_dict[c]()
+        except Exception as e:
+            usage()
+            click.echo("Error: No such command '{}'".format(c))
