@@ -12,5 +12,6 @@ def permission_required(permission):
         return decorated_function
     return decorator
 
+from .models.models import Permission
 def admin_required(f):
-    pass
+    return permission_required(Permission.ADMINISTER)(f)
