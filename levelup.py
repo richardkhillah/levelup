@@ -29,3 +29,21 @@ def test(test_names):
     else:
         tests = unittest.TestLoader().discover('tests')
     unittest.TextTestRunner(verbosity=2).run(tests)
+
+@app.cli.command()
+@click.argument('commands', nargs=-1)
+def dev(commands):
+    """Create & destroy dummy db objects"""
+    # https://click.palletsprojects.com/en/7.x/arguments/
+    from config import basedir
+    path = basedir+'/devtools'
+    if not os.path.exists(path):
+        raise RuntimeError(f'{path} does not exist.')
+
+    from devtools import fake
+    if not commands:
+        click.echo('Usage: flask dev COMMAND...')
+        click.echo("Try 'flask dev help' for help.")
+        click.echo('')
+    else:
+        fake.run(commands)
