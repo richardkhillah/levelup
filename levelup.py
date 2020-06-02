@@ -32,23 +32,18 @@ def test(test_names):
 
 @app.cli.command()
 @click.argument('commands', nargs=-1)
-def load(commands):
+def dev(commands):
     """Create & destroy dummy db objects"""
     # https://click.palletsprojects.com/en/7.x/arguments/
-    from devtools.load_users import load_dict
+    from config import basedir
+    path = basedir+'/devtools'
+    if not os.path.exists(path):
+        raise RuntimeError(f'{path} does not exist.')
 
-    def usage():
-        click.echo('Usage: flask load COMMAND...')
-        click.echo("Try 'flask load-users help' for help.")
-        click.echo('')
-
+    from devtools import fake
     if not commands:
-        usage()
-        exit()
-
-    for c in commands:
-        try:
-            load_dict[c]()
-        except Exception as e:
-            usage()
-            click.echo("Error: No such command '{}'".format(c))
+        click.echo('Usage: flask dev COMMAND...')
+        click.echo("Try 'flask dev help' for help.")
+        click.echo('')
+    else:
+        fake.run(commands)
