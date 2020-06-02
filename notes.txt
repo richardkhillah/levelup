@@ -1,0 +1,22 @@
+Remove files from directory:
+https://www.w3schools.com/python/python_file_remove.asp
+
+directory operations:
+http://net-informations.com/python/file/directory.htm
+
+good way of handling exceptions:
+https://stackoverflow.com/questions/5627425/what-is-a-good-way-to-handle-exceptions-when-trying-to-read-a-file-in-python
+
+python exceptions:
+https://docs.python.org/3/library/exceptions.html#os-exceptions
+
+docstrings:
+https://www.geeksforgeeks.org/python-docstrings/
+
+sys man page:
+https://docs.python.org/2/library/sys.html#sys.exc_info
+flask/cli.py: --contains how to access stack trace from exceptions
+https://github.com/pallets/flask/blob/master/src/flask/cli.py
+
+os.path page:
+https://docs.python.org/2/library/os.path.html
