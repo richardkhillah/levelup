@@ -12,12 +12,11 @@ if os.path.exists(dotenv_path):
 app = create_app('development')
 migrate = Migrate(app, db)
 
+from app.models.models import Role, User, Permission, Post
 
 @app.shell_context_processor
 def make_shell_context():
-    return dict(db=db, User=User, Role=Role)
-
-from app.models.models import Role, User
+    return dict(db=db, User=User, Role=Role, Permission=Permission, Post=Post)
 
 @app.cli.command()
 @click.argument('test_names', nargs=-1)
