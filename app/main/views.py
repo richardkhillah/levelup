@@ -11,7 +11,7 @@ from .forms import NameForm
 from .. import db
 from ..models.models import User, Role, Permission, Post
 from ..email import send_email
-from ..decorators import admin_required
+from ..decorators import admin_required, permission_required
 
 @main.route('/', methods=['GET', 'POST'])
 def index():
@@ -100,3 +100,96 @@ def edit(id):
         return redirect(url_for('.post', id=post.id))
     form.body.data = post.body
     return render_template('edit_post.html', form=form)
+
+@main.route('/follow/<username>')
+@login_required
+@permission_required(Permission.FOLLOW)
+def follow(username):
+    """
+    This view function loads the requested user,
+    verifies that it is valid and
+    that it isn’t already followed by the logged-in user,
+    and then calls the follow() helper function in the User
+    model to establish the link.
+    """
+    # Load the requested user,
+    user = User.query.filter_by(username=username).first()
+
+    # verify that the user is valid
+    if user is None:
+        flash("Invalid user")
+        return redirect(url_for('.index'))
+
+    # and that it isn’t already followed by the logged-in user,
+    if user.is_followed_by(current_user):
+        flash("You already follow this user.")
+        return redirect(url_for('.user', username=username))
+
+    # Call the follow() helper function in the User model
+    current_user.follow(user)
+    flash("You now follow %s" % username)
+    return redirect(url_for('.user', username=username))
+
+@main.route('/unfollow/<username>')
+@login_required
+@permission_required(Permission.FOLLOW)
+def unfollow(username):
+    """This view function is implemented similar to /follow/<username>."""
+    user = User.query.filter_by(username=username).first()
+    if user is None:
+        flash("Invalid user")
+        return redirect(url_for('.index'))
+    if not current_user.is_following(user):
+        flash("You do not follow this user.")
+        return redirect(url_for('.user', username=username))
+    current_user.unfollow(user)
+    flash("You stopped following %s" % username)
+    return redirect(url_for('.user', username=username))
+
+@main.route('/followers/<username>')
+def followers(username):
+    """
+    This function loads and validates the requested user,
+    then paginates its followers relationship. Because the query for
+    followers returns Follow instances, the list is converted into another
+    list that has user and timestamp fields in each entry so that
+    rendering is simpler.
+    """
+    # Load the requested user
+    user = User.query.filter_by(username=username).first()
+
+    # validate requested user
+    if user is None:
+        flash("Invalid user.")
+        return redirect(url_for('.index'))
+
+    # paginate requested user followers
+    page = request.args.get('page', 1, type=int)
+    pagination = user.followers.paginate(
+        page, per_page=int(current_app.config['LEVELUP_POSTS_PER_PAGE']),
+        error_out=False)
+
+    # Convert follwers instance list into a list containing dicts of
+    # {following user, timestamp}
+    follows = [ {'user': item.follower, 'timestamp': item.timestamp}
+                    for item in pagination.items]
+    return render_template('followers.html', title="Followers of ",
+                endpoint='.followers', pagination=pagination,
+                user=user, follows=follows)
+
+@main.route('/followed-by/<username>')
+def followed_by(username):
+    """This view function is implemented similar to /followers/<username>"""
+    user = User.query.filter_by(username=username).first()
+    if user is None:
+        flash("Invalid User")
+        return redirect(url_for('.index'))
+    page = request.args.get('page', 1, type=int)
+    pagination = user.followed.paginate(
+        page, per_page=int(current_app.config['LEVELUP_POSTS_PER_PAGE']),
+        error_out=False)
+    follows = [{'user': item.followed, 'timestamp': item.timestamp}
+                    for item in pagination.items]
+    return render_template('followers.html', title="Followers of ",
+                endpoint='.followers', pagination=pagination,
+                user=user, follows=follows)
