@@ -21,6 +21,13 @@
                 <a href="{{ url_for('.post', id=post.id) }}">
                     <span class="label label-default">Permalink</span>
                 </a>
+                {% if current_user == post.author %}
+                <!-- show grey edit button like in user.html -->
+                <a class="label label-default" href="{{ url_for('.edit', id=post.id) }}">Edit</a>
+                {% elif current_user.is_administrator() %}
+                <!-- show danger edit [admin] button like in user.html -->
+                <a class="label label-danger" href="{{ url_for('.edit', id=post.id) }}">Edit [Admin]</a>
+                {% endif %}
             </div>
         </div>
     </li>
