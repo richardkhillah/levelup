@@ -77,7 +77,7 @@ class User(UserMixin, db.Model):
     avatar_hash = db.Column(db.String(32))
 
     posts = db.relationship('Post', backref='author', lazy='dynamic')
-    
+
     # followed a db relationship with Follow Table whose follower_id is this users id.
     #   the relationship is backreferenced as follower and is joined. The backref on
     #   this side is dynamic loading, having cascade 'all, delete-orphan'
@@ -224,6 +224,15 @@ class User(UserMixin, db.Model):
         # a self query against followers where following id is the user id
         return self.followers.filter_by(
             follower_id=user.id).first() is not None
+
+    # followed posts returns the posts of users that the current user follows
+    # ending with Post objects, rows are filtered from Post where author id is
+    # the id of a followed user and where rows in Follows is filtered such that
+    # follower id is current users id
+    @property
+    def followed_posts(self):
+        return Post.query.join('Follow', Post.author_id == Follow.followed_id)\
+                .filter_by(Follow.follower_id == self.id)
 
 
 class AnonymousUser(AnonymousUserMixin):
