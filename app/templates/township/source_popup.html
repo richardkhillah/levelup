@@ -1,0 +1,15 @@
+<table class="table">
+    <tr>
+        <td width="64" style="border: 0px;"><img src="{{ user.gravatar(64) }}"></td>
+        <td style="border: 0px;">
+            <p>
+                <a href="{{ url_for('township.item', item_name=name) }}">
+                    {{ user.username }}
+                </a>
+            </p>
+            <small>
+                {{ name }}
+            </small>
+        </td>
+    </tr>
+</table>

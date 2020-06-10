@@ -66,3 +66,22 @@ div.flask-pagedown-preview h3 {
 .table.followers tr {
     border-bottom: 1px solid #e0e0e0;
 }
+
+
+/*--------------------
+ * township styling
+ */
+.landing-thumbnail {
+    position: absolute;
+}
+.vertical-center {
+    top: 50%;
+    -ms-transform: translateY(-50%);
+}
+.landing-offset {
+    margin-top: 8px;
+    margin-left: 158px;
+}
+.unstyled-list {
+    list-style-type: none;    
+}

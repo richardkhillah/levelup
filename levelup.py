@@ -18,6 +18,11 @@ from app.models.models import Role, User, Permission, Post
 def make_shell_context():
     return dict(db=db, User=User, Role=Role, Permission=Permission, Post=Post)
 
+from app.models.township import tm_dict
+@app.shell_context_processor
+def inject_sources():
+    return tm_dict
+
 @app.cli.command()
 @click.argument('test_names', nargs=-1)
 def test(test_names):

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}LevelUP - Landing{% endblock %}
+
+{% block page_content %}
+<section>
+    <div class="container" style="background-color: pink;">
+        <img class="img-rounded landing-thumbnail" src="{{ user.gravatar(size=150) }}">
+        <div class="landing-offset" style="background-color: green;">
+            <h1>{{ town.name }}</h1>
+            <p>
+                level: {{ town.level }} <br>
+                population: {{ town.population }} <br>
+                population cap: {{ town.population_cap }} <br>
+                coins: {{ town.coin }} <br>
+                cash: {{ town.cash }} <br>
+            </p>
+        </div>
+    </div>
+</section>
+
+<section>
+    <div class="container">
+        <p>
+            next level: {{ unlock.level }} <br>
+            total construction cost: 550000 coins <br>
+            Unlock items:
+        </p>
+        <div class="list-group">
+            {% if unlock.sources %}
+                {% for s in unlock["sources"] %}
+                    {% set source_link %}
+                        <span class="source_popup">
+                            <a href="{{ url_for('township.source', source_name=s.name)}}" class="list-group-item list-group-item-action">
+                                {{ s.name }}
+                            </a>
+                        </span>
+                    {% endset %}
+                    {{ source_link }}
+                {% endfor %}
+            {% endif %}
+
+            {% if unlock.items %}
+                {% for i in unlock["items"] %}
+                <a href="{{ url_for('township.item', item_name=i.name) }}"
+                    class="list-group-item list-group-item-action">
+                    {{ i.name }}
+                </a>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}
