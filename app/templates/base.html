@@ -75,10 +75,14 @@
                 var elem = $(event.currentTarget);
                 timer = setTimeout(function() {
                     timer = null;
+                    // get the html element to insert into the popover
                     xhr = $.ajax(
                         '/township/source/' + elem.first().text().trim() + '/popup').done(
+                            // create the popup
                             function(data) {
+                                // clear response so it doesn't interever with other popovers
                                 xhr = null;
+                                // inject the html into the popup
                                 elem.popover({
                                     trigger: 'manual',
                                     html: true,
@@ -86,6 +90,7 @@
                                     container: elem,
                                     content: data,
                                     placement: 'auto'
+                                // finally sho the popup
                                 }).popover('show');
                             }
                         );
