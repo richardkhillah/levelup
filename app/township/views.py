@@ -25,18 +25,6 @@ def landing():
     unlock = {
         'level': 85,
         'sources': sources,
-        #     [
-        #     {
-        #         'name': 'Bakery',
-        #         'cost': 150000,
-        #         'construction_time': "2d17h"
-        #     },
-        #     {
-        #         'name': 'test source 2',
-        #         'cost': 500000,
-        #         'construction_time': "3d"
-        #     },
-        # ],
         'items': [
             {
                 'name': "Tea Bags",
@@ -62,9 +50,6 @@ def landing():
 @admin_required
 def source(source_name):
     source = Source.query.filter_by(name=source_name).first()
-    # source = {
-    #     'name': source_name,
-    # }
     return render_template('township/source.html', source=source)
 
 
