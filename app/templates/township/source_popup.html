@@ -4,11 +4,20 @@
         <td style="border: 0px;">
             <p>
                 <a href="{{ url_for('township.item', item_name=name) }}">
-                    {{ user.username }}
+                    {{ source.name }}
                 </a>
             </p>
             <small>
-                {{ name }}
+                <p>Construction time: {{ source.time_to_make }}</p>
+                {% if source.required_population %}
+                <p>Required Population: {{ source.required_population }}</p>
+                {% endif %}
+                {% if source.total_quantity %}
+                <p>Total Quantity: {{ source.total_quantity }}</p>
+                {% endif %}
+                {% if source.purchase_cost %}
+                <p>Purchase Cost: {{ source.purchase_cost }}</p>
+                {% endif %}
             </small>
         </td>
     </tr>

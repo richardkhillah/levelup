@@ -7,6 +7,8 @@ from .. import db
 from ..models.models import User
 from ..decorators import admin_required
 
+from ..models.township import Source
+
 @township.route('/landing')
 @admin_required
 def landing():
@@ -19,20 +21,22 @@ def landing():
         'coin': 830635,
         'cash': 1490
     }
+    sources = Source.query.all()
     unlock = {
         'level': 85,
-        'sources': [
-            {
-                'name': 'test source 1',
-                'cost': 150000,
-                'construction_time': "2d17h"
-            },
-            {
-                'name': 'test source 2',
-                'cost': 500000,
-                'construction_time': "3d"
-            },
-        ],
+        'sources': sources,
+        #     [
+        #     {
+        #         'name': 'Bakery',
+        #         'cost': 150000,
+        #         'construction_time': "2d17h"
+        #     },
+        #     {
+        #         'name': 'test source 2',
+        #         'cost': 500000,
+        #         'construction_time': "3d"
+        #     },
+        # ],
         'items': [
             {
                 'name': "Tea Bags",
@@ -57,9 +61,10 @@ def landing():
 @township.route('/source/<source_name>')
 @admin_required
 def source(source_name):
-    source = {
-        'name': source_name,
-    }
+    source = Source.query.filter_by(name=source_name).first()
+    # source = {
+    #     'name': source_name,
+    # }
     return render_template('township/source.html', source=source)
 
 
@@ -76,8 +81,9 @@ def item(item_name):
 @township.route('/source/<source_name>/popup')
 @admin_required
 def source_popup(source_name):
+    source = Source.query.filter_by(name=source_name).first_or_404()
     return render_template('township/source_popup.html',
-                user=current_user, name=source_name)
+                user=current_user, name=source_name, source=source)
 
 @township.route('/item/<item_name>/popup')
 @admin_required
