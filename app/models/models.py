@@ -234,6 +234,8 @@ class User(UserMixin, db.Model):
         return Post.query.join('Follow', Post.author_id == Follow.followed_id)\
                 .filter_by(Follow.follower_id == self.id)
 
+    def has_town(self):
+        return False
 
 class AnonymousUser(AnonymousUserMixin):
     def can(self, permission):

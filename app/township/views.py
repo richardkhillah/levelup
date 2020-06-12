@@ -13,7 +13,7 @@ from ..models.township import Source, Item, Town
 @township.route('/landing')
 @admin_required
 def landing():
-    user = User.query.get(1)
+    # user = User.query.get(1)
     town = {
         'name': "Windsor",
         'level': 10,
@@ -48,7 +48,7 @@ def landing():
         #     },
         # ],
     }
-    return render_template('township/landing.html', user=user,
+    return render_template('township/landing.html', user=current_user,
         town=town, unlock=unlock)
 
 @township.route('/source/<source_name>')

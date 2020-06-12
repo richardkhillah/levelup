@@ -132,7 +132,7 @@ item = {
     # 'gem': Gem
 }
 
-
+from .models import User
 class Town(db.Model):
     __tablename__ = 'town'
     id = db.Column(db.Integer, primary_key=True)
@@ -142,6 +142,7 @@ class Town(db.Model):
     population_cap = db.Column(db.Integer)
     coins = db.Column(db.Integer)
     township_cash = db.Column(db.Integer)
+    # user_id = db.Column(db.Integer, db.ForeignKey(User.id))
 
     # sources = db.relationship('Source', backref='town')
     # source_stats = db.relationship('SourceStat', backref='town')
