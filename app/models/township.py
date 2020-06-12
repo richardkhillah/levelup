@@ -144,7 +144,7 @@ class Town(db.Model):
     township_cash = db.Column(db.Integer)
 
     # sources = db.relationship('Source', backref='town')
-    source_stats = db.relationship('SourceStat', backref='town')
+    # source_stats = db.relationship('SourceStat', backref='town')
 
     def available_sources(self):
         return Source.query.filter(self.level >= Source.required_level)

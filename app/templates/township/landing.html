@@ -28,6 +28,7 @@
         </p>
         <div class="list-group">
             {% if unlock.sources %}
+            <p><strong>Sources:</strong></p>
                 {% for s in unlock["sources"] %}
                     {% set source_link %}
                         <span class="source_popup">
@@ -41,6 +42,7 @@
             {% endif %}
 
             {% if unlock.items %}
+            <p><strong>Items:</strong></p>
                 {% for i in unlock["items"] %}
                 <a href="{{ url_for('township.item', item_name=i.name) }}"
                     class="list-group-item list-group-item-action">

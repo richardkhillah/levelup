@@ -3,11 +3,12 @@ from flask_login import login_required, current_user
 from flask import current_app, abort
 
 from . import township
+from .forms import NewTownForm
 from .. import db
 from ..models.models import User
 from ..decorators import admin_required
 
-from ..models.township import Source, Item
+from ..models.township import Source, Item, Town
 
 @township.route('/landing')
 @admin_required
@@ -15,7 +16,7 @@ def landing():
     user = User.query.get(1)
     town = {
         'name': "Windsor",
-        'level': 86,
+        'level': 10,
         'population': 17845,
         'population_cap': 17845,
         'coin': 830635,
@@ -79,3 +80,22 @@ def source_popup(source_name):
 def item_popup(item_name):
     return render_template('township/item_popup.html',
                 user=current_user, name=item_name)
+
+@township.route('/register-town', methods=['GET', 'POST'])
+@admin_required
+def register_town():
+    form = NewTownForm()
+    if form.validate_on_submit():
+        town = Town(name=form.town_name.data,
+                    level=form.level.data,
+                    population=form.population.data,
+                    population_cap=form.population_cap.data,
+                    coins=form.coins.data,
+                    township_cash=form.township_cash.data)
+        # TODO: assign a user_id to this town and update databse
+        db.session.add(town)
+        # db.session.commit()
+
+        flash('Form Submitted')
+        return redirect(url_for('.landing'))
+    return render_template('township/register_town.html', form=form)
