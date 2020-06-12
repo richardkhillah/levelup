@@ -54,3 +54,54 @@
     </div>
 </section>
 {% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+    $(function() {
+        $('.source_popup').hover(
+            // mouse in event handler
+            function(event) {
+                var elem = $(event.currentTarget);
+                timer = setTimeout(function() {
+                    timer = null;
+                    // get the html element to insert into the popover
+                    xhr = $.ajax(
+                        '/township/source/' + elem.first().text().trim() + '/popup').done(
+                            // create the popup
+                            function(data) {
+                                // clear response so it doesn't interever with other popovers
+                                xhr = null;
+                                // inject the html into the popup
+                                elem.popover({
+                                    trigger: 'manual',
+                                    html: true,
+                                    animation: false,
+                                    container: elem,
+                                    content: data,
+                                    placement: 'auto'
+                                // finally sho the popup
+                                }).popover('show');
+                            }
+                        );
+                }, 1000);
+            },
+            // mouse out event handler
+            function(event) {
+                var elem = $(event.currentTarget);
+                if (timer) {
+                    clearTimeout(timer);
+                    timer = null;
+                }
+                else if (xhr) {
+                    xhr.abort();
+                    xhr = null;
+                }
+                else {
+                    elem.popover('destroy');
+                }
+            }
+        )
+    });
+</script>
+{% endblock %}

@@ -15,11 +15,10 @@ from ..models.township import Source, Item, Town
 def landing():
     if not current_user.town:
         abort(404)
-
+    # TODO: encapsulate this in Town with some method, refactor landing.html
     next_level = current_user.town.level + 1
     sources = Source.query.filter_by(required_level=next_level).all()
     items = Item.query.filter_by(required_level=next_level).all()
-
     unlock = {
         'level': next_level,
         'sources': sources,
@@ -42,6 +41,7 @@ def landing():
         #     },
         # ],
     }
+    
     return render_template('township/landing.html', user=current_user,
         town=current_user.town, unlock=unlock)
 
