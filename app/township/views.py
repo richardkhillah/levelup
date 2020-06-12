@@ -10,7 +10,7 @@ from ..decorators import admin_required
 
 from ..models.township import Source, Item, Town
 
-@township.route('/landing')
+@township.route('/home')
 @admin_required
 def landing():
     if not current_user.town:
