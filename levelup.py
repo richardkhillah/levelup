@@ -47,9 +47,11 @@ if os.path.exists(devtools_path):
             raise RuntimeError(f'{path} does not exist.')
 
         from devtools import fake
+        from devtools import load_township_assets
         if not commands:
             click.echo('Usage: flask dev COMMAND...')
             click.echo("Try 'flask dev help' for help.")
             click.echo('')
         else:
-            fake.run(commands)
+            # fake.run(commands)
+            load_township_assets.run(commands)

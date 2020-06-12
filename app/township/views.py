@@ -7,7 +7,7 @@ from .. import db
 from ..models.models import User
 from ..decorators import admin_required
 
-from ..models.township import Source
+from ..models.township import Source, Item
 
 @township.route('/landing')
 @admin_required
@@ -15,33 +15,37 @@ def landing():
     user = User.query.get(1)
     town = {
         'name': "Windsor",
-        'level': 84,
+        'level': 86,
         'population': 17845,
         'population_cap': 17845,
         'coin': 830635,
         'cash': 1490
     }
-    sources = Source.query.all()
+    next_level = town['level'] + 1
+    sources = Source.query.filter_by(required_level=next_level).all()
+    items = Item.query.filter_by(required_level=next_level).all()
+
     unlock = {
-        'level': 85,
+        'level': next_level,
         'sources': sources,
-        'items': [
-            {
-                'name': "Tea Bags",
-                'source_name': 'Paper Factory',
-                'prodcution_time': "9m45s",
-            },
-            {
-                'name': "Chocolate Bar",
-                'source_name': 'Candy Factory',
-                'prodcution_time': "3h30m",
-            },
-            {
-                'name': "Tea Pot",
-                'source_name': 'Kitchenware Factory',
-                'prodcution_time': "2h15m",
-            },
-        ],
+        'items': items,
+        # 'items': [
+        #     {
+        #         'name': "Tea Bags",
+        #         'source_name': 'Paper Factory',
+        #         'prodcution_time': "9m45s",
+        #     },
+        #     {
+        #         'name': "Chocolate Bar",
+        #         'source_name': 'Candy Factory',
+        #         'prodcution_time': "3h30m",
+        #     },
+        #     {
+        #         'name': "Tea Pot",
+        #         'source_name': 'Kitchenware Factory',
+        #         'prodcution_time': "2h15m",
+        #     },
+        # ],
     }
     return render_template('township/landing.html', user=user,
         town=town, unlock=unlock)

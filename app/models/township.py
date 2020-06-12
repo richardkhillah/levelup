@@ -61,6 +61,7 @@ class Special(Source):
     __mapper_args__ = {'polymorphic_identity': 'special'}
 
 source = {
+    'source': Source,
     'farming': Farming,
     'factory': Factory,
     'island': Special,
@@ -121,6 +122,7 @@ class Foundry(Item):
 #     }
 
 item = {
+    'item': Item,
     'plant': Plant,
     'manufactured': Manufactured,
     'imported': Imported,
