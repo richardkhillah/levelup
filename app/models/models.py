@@ -96,6 +96,8 @@ class User(UserMixin, db.Model):
                                  lazy='dynamic',
                                  cascade='all, delete-orphan')
 
+    town = db.relationship('Town', backref='owner', uselist=False)
+
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
         if self.role is None:

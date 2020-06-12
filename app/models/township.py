@@ -142,7 +142,7 @@ class Town(db.Model):
     population_cap = db.Column(db.Integer)
     coins = db.Column(db.Integer)
     township_cash = db.Column(db.Integer)
-    # user_id = db.Column(db.Integer, db.ForeignKey(User.id))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
     # sources = db.relationship('Source', backref='town')
     # source_stats = db.relationship('SourceStat', backref='town')

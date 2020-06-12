@@ -13,16 +13,10 @@ from ..models.township import Source, Item, Town
 @township.route('/landing')
 @admin_required
 def landing():
-    # user = User.query.get(1)
-    town = {
-        'name': "Windsor",
-        'level': 10,
-        'population': 17845,
-        'population_cap': 17845,
-        'coin': 830635,
-        'cash': 1490
-    }
-    next_level = town['level'] + 1
+    if not current_user.town:
+        abort(404)
+
+    next_level = current_user.town.level + 1
     sources = Source.query.filter_by(required_level=next_level).all()
     items = Item.query.filter_by(required_level=next_level).all()
 
@@ -49,7 +43,7 @@ def landing():
         # ],
     }
     return render_template('township/landing.html', user=current_user,
-        town=town, unlock=unlock)
+        town=current_user.town, unlock=unlock)
 
 @township.route('/source/<source_name>')
 @admin_required
@@ -95,6 +89,7 @@ def register_town():
         # TODO: assign a user_id to this town and update databse
         db.session.add(town)
         # db.session.commit()
+        # current_user.town_id = town.id
 
         flash('Form Submitted')
         return redirect(url_for('.landing'))
