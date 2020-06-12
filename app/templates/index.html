@@ -13,7 +13,7 @@
         Stranger
         {% endif %}!
     </h1>
-    {% if current_user.has_town() %}
+    {% if current_user.town %}
         (<a href="{{ url_for('township.landing') }}">Go to my town</a>)
     {% else %}
         (<a href="{{ url_for('township.register_town') }}">Add a town</a>)

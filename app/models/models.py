@@ -96,6 +96,8 @@ class User(UserMixin, db.Model):
                                  lazy='dynamic',
                                  cascade='all, delete-orphan')
 
+    town = db.relationship('Town', backref='owner', uselist=False)
+
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
         if self.role is None:
@@ -234,8 +236,6 @@ class User(UserMixin, db.Model):
         return Post.query.join('Follow', Post.author_id == Follow.followed_id)\
                 .filter_by(Follow.follower_id == self.id)
 
-    def has_town(self):
-        return False
 
 class AnonymousUser(AnonymousUserMixin):
     def can(self, permission):
