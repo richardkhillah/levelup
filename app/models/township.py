@@ -199,6 +199,7 @@ tm_dict = dict(
     Item=Item,
     Plant=Plant,
     Manufactured=Manufactured,
+    Imported=Imported,
     Island=Island,
     Material=Material,
     Foundry=Foundry,
