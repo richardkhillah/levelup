@@ -7,7 +7,9 @@
     <div class="container" style="background-color: pink;">
         <img class="img-rounded landing-thumbnail" src="{{ user.gravatar(size=150) }}">
         <div class="landing-offset" style="background-color: green;">
-            <h1>{{ town.name }}</h1>
+            <h1>
+                <a href="{{ url_for('township.edit_town')}}">{{ town.name }}</a>
+            </h1>
             <p>
                 level: {{ town.level }}<br>
                 population: {{ town.population }} <br>
@@ -59,6 +61,7 @@
 {{ super() }}
 <script>
     $(function() {
+        // want a list of dicts to apply this method to
         $('.source_popup').hover(
             // mouse in event handler
             function(event) {
@@ -105,3 +108,7 @@
     });
 </script>
 {% endblock %}
+
+<!-- https://pietschsoft.com/post/2015/09/05/javascript-basics-how-to-create-a-dictionary-with-keyvalue-pairs -->
+<!-- https://stackoverflow.com/questions/13378051/how-to-select-find-an-element-inside-an-event-currenttarget-in-jquery -->
+<!-- https://stackoverflow.com/questions/11238508/how-to-get-value-of-a-div-using-javascript -->
