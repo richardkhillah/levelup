@@ -1,7 +1,40 @@
 {% extends "base.html" %}
 
-{% block title %}LevelUP - Item: item name{% endblock %}
+{% block title %}LevelUP - Item: {{ item.name }}{% endblock %}
 
 {% block page_content %}
-<h1>Item Page</h1>
+<!-- TODO: township nav here -->
+<section class="container">
+    <a href="{{ url_for('township.landing') }}">Back to {{ current_user.town.name }}</a>
+    <h1>{{ item.name }}</h1>
+</section>
+
+<section class="container">
+    <!-- Tool tips?? -->
+    <p>Unlocked at: {{ item.required_level }}</p>
+    <p>Source: {{ item.source.name }}</p>
+    <p>Production Time: {{ item.time_to_make }}</p>
+
+    <!-- list of materials -->
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Ingredient Name</th>
+                <th scope="col">Quantity</th>
+          </tr>
+        </thead>
+        <tbody>
+            <!-- this will change to use item.<some-list-name> -->
+            {% if ingredients %}
+            {% for item in ingredients %}
+            <tr>
+              <th scope="row">{{ item.name }}</th>
+              <td>{{ item.quantity }}</td>
+            <tr>
+            {% endfor %}
+            {% endif %}
+        </tbody>
+    </table>
+</section>
+
 {% endblock %}

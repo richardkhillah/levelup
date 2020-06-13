@@ -40,8 +40,30 @@ def source(source_name):
 @township.route('/item/<item_name>')
 @admin_required
 def item(item_name):
-    item = {}
-    return render_template('township/item.html', item=item)
+    item = Item.query.filter_by(name=item_name).first()
+    ingredients = [
+        {
+            # popover on names to get quick stats on them
+            'name': 'ingredient 1 name',
+            'quantity': '1',
+            # other info as wanted.
+        },
+        {
+            # popover on names to get quick stats on them
+            'name': 'ingredient 2 name',
+            'quantity': '2',
+            # other info as wanted.
+        },
+        {
+            # popover on names to get quick stats on them
+            'name': 'ingredient 3 name',
+            'quantity': '3',
+            # other info as wanted.
+        },
+
+    ]
+    return render_template('township/item.html', item=item,
+        ingredients=ingredients)
 
 
 
