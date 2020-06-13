@@ -32,14 +32,9 @@
             {% if unlock.sources %}
             <p><strong>Sources:</strong></p>
                 {% for s in unlock["sources"] %}
-                    {% set source_link %}
-                        <span class="source_popup">
-                            <a href="{{ url_for('township.source', source_name=s.name)}}" class="list-group-item list-group-item-action">
-                                {{ s.name }}
-                            </a>
-                        </span>
-                    {% endset %}
-                    {{ source_link }}
+                    <a href="{{ url_for('township.source', source_name=s.name)}}" class="list-group-item list-group-item-action">
+                        {{ s.name }}
+                    </a>
                 {% endfor %}
             {% endif %}
 
