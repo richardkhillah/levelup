@@ -62,6 +62,10 @@ def item_popup(item_name):
 @township.route('/register-town', methods=['GET', 'POST'])
 @admin_required
 def register_town():
+    # if user has town already, redirect to .landing
+    if current_user.town is not None:
+        return redirect(url_for('.landing'))
+
     form = NewTownForm()
     if form.validate_on_submit():
         town = Town(name=form.town_name.data,
@@ -70,10 +74,8 @@ def register_town():
                     population_cap=form.population_cap.data,
                     coins=form.coins.data,
                     township_cash=form.township_cash.data)
-        # TODO: assign a user_id to this town and update databse
+        town.owner = current_user
         db.session.add(town)
-        # db.session.commit()
-        # current_user.town_id = town.id
 
         flash('Form Submitted')
         return redirect(url_for('.landing'))
