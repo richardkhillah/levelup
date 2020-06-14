@@ -12,7 +12,9 @@
 <section class="container">
     <!-- Tool tips?? -->
     <p>Unlocked at: {{ item.required_level }}</p>
+    {% if item.source %}
     <p>Source: {{ item.source.name }}</p>
+    {% endif %}
     <p>Production Time: {{ item.time_to_make }}</p>
 
     <!-- list of materials -->

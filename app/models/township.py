@@ -13,7 +13,7 @@ class BaseB(db.Model):
     # TODO: quantity_built is a property of the town - refactor.
     quantity_built = db.Column(db.Integer, default=0)
     required_population = db.Column(db.Integer)
-    # purchase_cost = db.Column(db.Integer)
+    purchase_cost = db.Column(db.Integer)
 
 class Source(BaseA, BaseB):
     __tablename__ = 'source'
@@ -152,6 +152,25 @@ class Town(db.Model):
 
     def purchase_source(self, source):
         pass
+
+class Unlock:
+    def __init__(self, level=None, sources=None, items=None):
+        self.level = level
+        self.sources = sources
+        self.items = items
+
+    @property
+    def construction_cost(self):
+        cost = 0
+        for source in self.sources:
+            if source.purchase_cost:
+                cost += source.purchase_cost
+        return cost
+
+    @construction_cost.setter
+    def construction_cost(self):
+        raise AttributeError("construction_cost is a computed value")
+
 
 class SourceStat(db.Model):
     __tablename__ = 'source_stats'
