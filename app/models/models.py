@@ -241,7 +241,7 @@ class User(UserMixin, db.Model):
         for user in User.query.all():
             if not user.is_following(user):
                 user.follow(user)
-                db.session.add()
+                db.session.add(user)
                 db.session.commit()
 
 class AnonymousUser(AnonymousUserMixin):
