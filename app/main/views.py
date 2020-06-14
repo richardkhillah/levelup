@@ -1,4 +1,5 @@
-from flask import render_template, session, redirect, url_for, flash, request
+from flask import render_template, session, redirect, url_for, flash
+from flask import request, make_response
 from flask_login import login_required, current_user
 from flask import current_app, abort
 from .forms import EditProfileForm, EditProfileAdminForm
@@ -22,15 +23,37 @@ def index():
                     author=current_user._get_current_object())
         db.session.add(post)
         return redirect(url_for('.index'))
+
     page = request.args.get('page', 1, type=int)
-    pagination = Post.query.order_by(Post.timestamp.desc()).paginate(
+    show_followed = False
+    if current_user.is_authenticated:
+        show_followed = bool(request.cookies.get('show_followed', ''))
+    if show_followed:
+        query = current_user.followed_posts
+    else:
+        query = Post.query
+    pagination = query.order_by(Post.timestamp.desc()).paginate(
         page, per_page=int(current_app.config['LEVELUP_POSTS_PER_PAGE']),
         error_out=False)
     posts = pagination.items
     return render_template('index.html',
                             form=form, posts=posts, pagination=pagination)
 
+@main.route('/all')
+def show_all():
+    resp = make_response(redirect(url_for('main.index')))
+    resp.set_cookie('show_followed', '', max_age=30*24*60*60)
+    return resp
+
+@main.route('/followed')
+@login_required
+def show_followed():
+    resp = make_response(redirect(url_for('main.index')))
+    resp.set_cookie('show_followed', '1', max_age=30*24*60*60)
+    return resp
+
 @main.route('/post/<int:id>')
+@login_required
 def post(id):
     post = Post.query.get_or_404(id)
     return render_template('post.html', posts=[post])

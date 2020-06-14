@@ -40,10 +40,10 @@
         {% endif %}
         <!-- anchor followers with a followers count links to followers using user -->
         <a href="{{ url_for('.followers', username=user.username) }}">
-            Followers: <span class="badge">{{ user.followers.count() }}</span></a>
+            Followers: <span class="badge">{{ user.followers.count() - 1 }}</span></a>
         <!-- anchor following with a followed count links to followed_by using user -->
         <a href="{{ url_for('.followed_by', username=user.username) }}">
-            Following: <span class="badge">{{ user.followed.count() }}</span></a>
+            Following: <span class="badge">{{ user.followed.count() - 1 }}</span></a>
         <!-- if current user is followed by the user current_user is following -->
             <!-- follows you tag -->
         {% if current_user.is_authenticated and user != current_user
