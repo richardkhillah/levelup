@@ -5,6 +5,7 @@ class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'hard to guess string'
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_RECORD_QUERIES = True
     MAIL_SERVER = os.environ.get('MAIL_SERVER', 'smtp.googlemail.com')
     MAIL_PORT = int(os.environ.get('MAIL_PORT', '587'))
     MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS', 'true').lower() in \
@@ -13,7 +14,7 @@ class Config:
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     LEVELUP_MAIL_SUBJECT_PREFIX = '[LevelUP] '
     LEVELUP_MAIL_SENDER = 'LevelUP Admin <rkhillah.developer@gmail.com>'
-    LEVELUP_ADMIN = os.environ.get('LEVELUP_ADMIN')
+    LEVELUP_ADMIN = os.environ.get('LEVELUP_ADMIN') or ['rkhillah.developer@gmail.com']
     LEVELUP_POSTS_PER_PAGE = os.environ.get('LEVELUP_POSTS_PER_PAGE') or 20
     LEVELUP_FOLLOWERS_PER_PAGE = os.environ.get('LEVELUP_FOLLOWERS_PER_PAGE') or 50
     LEVELUP_COMMENTS_PER_PAGE = os.environ.get('LEVELUP_COMMENTS_PER_PAGE') or 30
@@ -25,7 +26,7 @@ class Config:
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URI') or \
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
         'sqlite:///' + os.path.join(basedir, 'data-dev.sqlite')
 
 class TestingConfig(Config):
