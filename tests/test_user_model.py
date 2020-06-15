@@ -2,7 +2,7 @@ import unittest
 import time
 from datetime import datetime
 from app import create_app, db
-from app.models import User, AnonymousUser, Role, Permission, Follow
+from app.models.models import User, AnonymousUser, Role, Permission, Follow
 
 
 class UserModelTestCase(unittest.TestCase):
@@ -65,7 +65,7 @@ class UserModelTestCase(unittest.TestCase):
         u = User(password='cat')
         db.session.add(u)
         db.session.commit()
-        token = u.generate_reset_token()
+        token = u.generate_reset_password_token()
         self.assertTrue(User.reset_password(token, 'dog'))
         self.assertTrue(u.verify_password('dog'))
 
@@ -73,7 +73,7 @@ class UserModelTestCase(unittest.TestCase):
         u = User(password='cat')
         db.session.add(u)
         db.session.commit()
-        token = u.generate_reset_token()
+        token = u.generate_reset_password_token()
         self.assertFalse(User.reset_password(token + 'a', 'horse'))
         self.assertTrue(u.verify_password('cat'))
 
@@ -81,7 +81,7 @@ class UserModelTestCase(unittest.TestCase):
         u = User(email='john@example.com', password='cat')
         db.session.add(u)
         db.session.commit()
-        token = u.generate_email_change_token('susan@example.org')
+        token = u.generate_change_email_token('susan@example.org')
         self.assertTrue(u.change_email(token))
         self.assertTrue(u.email == 'susan@example.org')
 
@@ -91,7 +91,7 @@ class UserModelTestCase(unittest.TestCase):
         db.session.add(u1)
         db.session.add(u2)
         db.session.commit()
-        token = u1.generate_email_change_token('david@example.net')
+        token = u1.generate_change_email_token('david@example.net')
         self.assertFalse(u2.change_email(token))
         self.assertTrue(u2.email == 'susan@example.org')
 
@@ -101,7 +101,7 @@ class UserModelTestCase(unittest.TestCase):
         db.session.add(u1)
         db.session.add(u2)
         db.session.commit()
-        token = u2.generate_email_change_token('john@example.com')
+        token = u2.generate_change_email_token('john@example.com')
         self.assertFalse(u2.change_email(token))
         self.assertTrue(u2.email == 'susan@example.org')
 
@@ -109,35 +109,35 @@ class UserModelTestCase(unittest.TestCase):
         u = User(email='john@example.com', password='cat')
         self.assertTrue(u.can(Permission.FOLLOW))
         self.assertTrue(u.can(Permission.COMMENT))
-        self.assertTrue(u.can(Permission.WRITE))
-        self.assertFalse(u.can(Permission.MODERATE))
-        self.assertFalse(u.can(Permission.ADMIN))
+        self.assertTrue(u.can(Permission.WRITE_ARTICLES))
+        self.assertFalse(u.can(Permission.MODERATE_COMMENTS))
+        self.assertFalse(u.can(Permission.ADMINISTER))
 
     def test_moderator_role(self):
         r = Role.query.filter_by(name='Moderator').first()
         u = User(email='john@example.com', password='cat', role=r)
         self.assertTrue(u.can(Permission.FOLLOW))
         self.assertTrue(u.can(Permission.COMMENT))
-        self.assertTrue(u.can(Permission.WRITE))
-        self.assertTrue(u.can(Permission.MODERATE))
-        self.assertFalse(u.can(Permission.ADMIN))
+        self.assertTrue(u.can(Permission.WRITE_ARTICLES))
+        self.assertTrue(u.can(Permission.MODERATE_COMMENTS))
+        self.assertFalse(u.can(Permission.ADMINISTER))
 
     def test_administrator_role(self):
         r = Role.query.filter_by(name='Administrator').first()
         u = User(email='john@example.com', password='cat', role=r)
         self.assertTrue(u.can(Permission.FOLLOW))
         self.assertTrue(u.can(Permission.COMMENT))
-        self.assertTrue(u.can(Permission.WRITE))
-        self.assertTrue(u.can(Permission.MODERATE))
-        self.assertTrue(u.can(Permission.ADMIN))
+        self.assertTrue(u.can(Permission.WRITE_ARTICLES))
+        self.assertTrue(u.can(Permission.MODERATE_COMMENTS))
+        self.assertTrue(u.can(Permission.ADMINISTER))
 
     def test_anonymous_user(self):
         u = AnonymousUser()
         self.assertFalse(u.can(Permission.FOLLOW))
         self.assertFalse(u.can(Permission.COMMENT))
-        self.assertFalse(u.can(Permission.WRITE))
-        self.assertFalse(u.can(Permission.MODERATE))
-        self.assertFalse(u.can(Permission.ADMIN))
+        self.assertFalse(u.can(Permission.WRITE_ARTICLES))
+        self.assertFalse(u.can(Permission.MODERATE_COMMENTS))
+        self.assertFalse(u.can(Permission.ADMINISTER))
 
     def test_timestamps(self):
         u = User(password='cat')
@@ -207,13 +207,13 @@ class UserModelTestCase(unittest.TestCase):
         db.session.commit()
         self.assertTrue(Follow.query.count() == 1)
 
-    def test_to_json(self):
-        u = User(email='john@example.com', password='cat')
-        db.session.add(u)
-        db.session.commit()
-        with self.app.test_request_context('/'):
-            json_user = u.to_json()
-        expected_keys = ['url', 'username', 'member_since', 'last_seen',
-                         'posts_url', 'followed_posts_url', 'post_count']
-        self.assertEqual(sorted(json_user.keys()), sorted(expected_keys))
-        self.assertEqual('/api/v1/users/' + str(u.id), json_user['url'])
+    # def test_to_json(self):
+    #     u = User(email='john@example.com', password='cat')
+    #     db.session.add(u)
+    #     db.session.commit()
+    #     with self.app.test_request_context('/'):
+    #         json_user = u.to_json()
+    #     expected_keys = ['url', 'username', 'member_since', 'last_seen',
+    #                      'posts_url', 'followed_posts_url', 'post_count']
+    #     self.assertEqual(sorted(json_user.keys()), sorted(expected_keys))
+    #     self.assertEqual('/api/v1/users/' + str(u.id), json_user['url'])
