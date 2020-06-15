@@ -22,6 +22,7 @@
         <p>Member since {{ moment(user.member_since).format('L') }}. Last seen {{ moment(user.last_seen).fromNow() }}.</p>
         <!-- blog post count -->
         <p>Blog posts: {{ user.posts.count() }}</p>
+        <p>
         <!-- if current user can follow and current page is not current users page -->
         {% if current_user.can(Permission.FOLLOW) and current_user != user %}
             <!-- if current user is not following user -->
@@ -51,6 +52,7 @@
     | <span class="label label-default">Follows You</span>
         <!-- endif -->
         {% endif %}
+        </p>
         <p>
             {% if user == current_user %}
             <a class="btn btn-default" href="{{ url_for('.edit_profile') }}">Edit Profile</a>
@@ -61,6 +63,11 @@
         </p>
     </div>
     <h3>Posts by {{ user.username }}</h3>
-    {% include "_posts.html" %}
-</div>
+    {% include '_posts.html' %}
+    {% if pagination %}
+    <div class="pagination">
+        {{ macros.pagination_widget(pagination, '.user', username=user.username) }}
+    </div>
+    {% endif %}
+    </div>
 {% endblock %}

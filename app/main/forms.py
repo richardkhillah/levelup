@@ -9,7 +9,6 @@ class NameForm(FlaskForm):
     name = StringField('What is your name?', validators=[DataRequired()])
     submit = SubmitField('Submit')
 
-
 class EditProfileForm(FlaskForm):
     name = StringField('Name', validators=[Length(0, 64)])
     location = StringField('Location', validators=[Length(0, 64)])
@@ -48,4 +47,8 @@ class EditProfileAdminForm(FlaskForm):
 
 class PostForm(FlaskForm):
     body = PageDownField("What's on your mind?", validators=[DataRequired()])
+    submit = SubmitField('Submit')
+
+class CommentForm(FlaskForm):
+    body = StringField('', validators=[DataRequired()])
     submit = SubmitField('Submit')

@@ -22,8 +22,9 @@ def landing():
     unlock.sources = Source.query.filter_by(required_level=unlock.level).all()
     unlock.items = Item.query.filter_by(required_level=unlock.level).all()
 
-    return render_template('township/landing.html', user=current_user,
-        town=current_user.town, unlock=unlock)
+    return render_template('township/landing.html',
+                            user=current_user._get_current_object(),
+                            town=current_user.town, unlock=unlock)
 
 @township.route('/source/<source_name>')
 @admin_required
@@ -69,7 +70,8 @@ def item(item_name):
 def source_popup(source_name):
     source = Source.query.filter_by(name=source_name).first_or_404()
     return render_template('township/source_popup.html',
-                user=current_user, name=source_name, source=source)
+                user=current_user._get_current_object(),
+                name=source_name, source=source)
 
 @township.route('/item/<item_name>/popup')
 @admin_required

@@ -14,6 +14,7 @@ class Config:
     LEVELUP_MAIL_SENDER = 'LevelUP Admin <rkhillah.developer@gmail.com>'
     LEVELUP_ADMIN = os.environ.get('LEVELUP_ADMIN')
     LEVELUP_POSTS_PER_PAGE = os.environ.get('LEVELUP_POSTS_PER_PAGE')
+    LEVELUP_COMMENTS_PER_PAGE = os.environ.get('LEVELUP_COMMENTS_PER_PAGE')
 
     def init_app(app):
         pass
