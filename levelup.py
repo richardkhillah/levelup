@@ -59,6 +59,21 @@ def test(coverage, test_names):
         print('HTML version: file://%s/index.html' % covdir)
         COV.erase()
 
+@app.cli.command()
+def deploy():
+    """Run deployment tasks."""
+    from flask_migrate import upgrade
+    from app.models.models import Role, User
+
+    # migrate db to latest revision
+    upgrade()
+
+    # create user roles
+    Role.insert_roles()
+
+    # create self-follows for all users
+    User.add_self_follows()
+
 devtools_path = os.path.join(os.path.dirname(__file__), 'devtools')
 if os.path.exists(devtools_path):
     @app.cli.command()
