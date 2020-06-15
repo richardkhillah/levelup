@@ -14,8 +14,10 @@ class Config:
     LEVELUP_MAIL_SUBJECT_PREFIX = '[LevelUP] '
     LEVELUP_MAIL_SENDER = 'LevelUP Admin <rkhillah.developer@gmail.com>'
     LEVELUP_ADMIN = os.environ.get('LEVELUP_ADMIN')
-    LEVELUP_POSTS_PER_PAGE = os.environ.get('LEVELUP_POSTS_PER_PAGE')
-    LEVELUP_COMMENTS_PER_PAGE = os.environ.get('LEVELUP_COMMENTS_PER_PAGE')
+    LEVELUP_POSTS_PER_PAGE = os.environ.get('LEVELUP_POSTS_PER_PAGE') or 20
+    LEVELUP_FOLLOWERS_PER_PAGE = os.environ.get('LEVELUP_FOLLOWERS_PER_PAGE') or 50
+    LEVELUP_COMMENTS_PER_PAGE = os.environ.get('LEVELUP_COMMENTS_PER_PAGE') or 30
+    LEVELUP_SLOW_DB_QUERY_TIME = 0.5
     SSL_REDIRECT = False
 
     def init_app(app):
@@ -58,6 +60,23 @@ class ProductionConfig(Config):
             secure=secure)
         mail_handler.setLevel(logging.ERROR)
         app.logger.addHandler(mail_handler)
+
+class HerokuConfig(ProductionConfig):
+    @classmethod
+    def init_app(cls, app):
+        ProductionConfig.init_app(app)
+
+        # handle reverse proxy server headers
+        from werkzeug.contrib.fixers import ProxyFix
+        app.wsgi_app = ProxyFix(app.wsgi_app)
+
+        # log to stderr
+        import logging
+        from logging import StreamHandler
+        file_handler = StreamHandler()
+        file_handler.setLevel(logging.INFO)
+        app.logger.addHandler(file_handler)
+
 
 # Register configurations
 config = {
