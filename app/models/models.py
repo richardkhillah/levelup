@@ -226,6 +226,8 @@ class User(UserMixin, db.Model):
             followed_id=user.id).first() is not None
 
     def is_followed_by(self, user):
+        if user.id is None:
+            return False
         # a self query against followers where following id is the user id
         return self.followers.filter_by(
             follower_id=user.id).first() is not None
