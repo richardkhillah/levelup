@@ -96,6 +96,7 @@ def register_town():
                     township_cash=form.township_cash.data)
         town.owner = current_user
         db.session.add(town)
+        db.session.commit()
 
         flash('Form Submitted')
         return redirect(url_for('.landing'))
@@ -114,6 +115,7 @@ def edit_town():
         town.coins = form.coins.data
         town.township_cash = form.township_cash.data
         db.session.add(town)
+        db.session.commit()
         flash("Success! Your town has been updated.")
         return redirect(url_for('.landing'))
     form.town_name.data = town.name
