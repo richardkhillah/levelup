@@ -172,40 +172,6 @@ class Unlock:
         raise AttributeError("construction_cost is a computed value")
 
 
-class SourceStat(db.Model):
-    __tablename__ = 'source_stats'
-    id = db.Column(db.Integer, primary_key=True)
-
-    source_id = db.Column(db.Integer, db.ForeignKey('source.id'))
-    source = db.relationship('Source', backref='source_stat', uselist=False)
-
-    quantity = db.Column(db.Integer, nullable=False, default=1)
-
-    town_id = db.Column(db.Integer, db.ForeignKey('town.id'))
-    level = db.Column(db.Integer, default=1)
-
-    @property
-    def source_name(self):
-        return self.source.name
-
-    def upgrade_requirements():
-        pass
-
-    def upgrade():
-        pass
-
-    def _downgrade():
-        pass
-
-class FactoryStats(SourceStat):
-    shelf_count = db.Column(db.Integer, default=6)
-    crate_count = db.Column(db.Integer, default=2)
-    production_time_reduction_fraction = db.Column(db.Float, default=0.0)
-    exp_point_increase_fraction = db.Column(db.Float, default=0.0)
-
-    def upgrade():
-        pass
-
 tm_dict = dict(
     db=db,
     Source=Source,
@@ -224,11 +190,4 @@ tm_dict = dict(
     Foundry=Foundry,
 
     Town=Town,
-    SourceStat=SourceStat,
-    FactoryStats=FactoryStats,
-
-    # add_dummies=add_dummies,
-    # add_towns=add_towns,
-    # remove_towns=remove_towns,
-    # remove_dummies=remove_dummies
 )

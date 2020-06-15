@@ -1,7 +1,20 @@
 import re
 import unittest
 from app import create_app, db
-from app.models import User, Role
+from app.models.models import User, Role
+
+"""
+TODO: FIX test_register_and_login
+$ flask test --no-coverage tests.test_client.FlaskClientTestCase.test_register_and_login
+to get the issues to fix. there is a 200 ≠ 302. ignoring that
+(by changing assert to be 200) causes:
+File "/Users/richardkhillah/Developer/levelup/tests/test_client.py", line 46, in test_register_and_login
+    response.get_data(as_text=True)))
+AssertionError: None is not true
+
+I do not want to dig into this right now, but since it is an auth page, I have
+concern about proper function and possible security.
+"""
 
 class FlaskClientTestCase(unittest.TestCase):
     def setUp(self):
