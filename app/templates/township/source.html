@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}LevelUP - [Source] {{ source.name }}{% endblock %}
+
+<!-- Township nav here -->
+
+{% block page_content %}
+<section class="container">
+    <a href="{{ url_for('township.landing') }}">Back to {{ current_user.town.name }}</a>
+    <h1>{{ source.name }}</h1>
+    <p>Unlocked at level: {{ source.required_level }}</p>
+    <p>Construction Cost: {{ source.purchase_cost }}</p>
+    <p>Construction Time: {{ source.time_to_make }}</p>
+    <p>Items requred: COMING SOON...(ish)</p>
+</section>
+
+<section class="container">
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Level<br>Unlocked</th>
+                <th scope="col">Time to <br>Make</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% if source.items %}
+            {% for item in source.items %}
+            <tr>
+              <th scope="row"><a href="{{ url_for('township.item', item_name=item.name) }}">
+                  {{ item.name }}</a></th>
+              <td>{{ item.required_level }}</td>
+              <td>{{ item.time_to_make }}</td>
+            <tr>
+            {% endfor %}
+            {% endif %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}

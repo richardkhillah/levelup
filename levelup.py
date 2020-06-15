@@ -12,12 +12,16 @@ if os.path.exists(dotenv_path):
 app = create_app('development')
 migrate = Migrate(app, db)
 
+from app.models.models import Role, User, Permission, Post
 
 @app.shell_context_processor
 def make_shell_context():
-    return dict(db=db, User=User, Role=Role)
+    return dict(db=db, User=User, Role=Role, Permission=Permission, Post=Post)
 
-from app.models.models import Role, User
+from app.models.township import tm_dict
+@app.shell_context_processor
+def inject_sources():
+    return tm_dict
 
 @app.cli.command()
 @click.argument('test_names', nargs=-1)
@@ -30,20 +34,24 @@ def test(test_names):
         tests = unittest.TestLoader().discover('tests')
     unittest.TextTestRunner(verbosity=2).run(tests)
 
-@app.cli.command()
-@click.argument('commands', nargs=-1)
-def dev(commands):
-    """Create & destroy dummy db objects"""
-    # https://click.palletsprojects.com/en/7.x/arguments/
-    from config import basedir
-    path = basedir+'/devtools'
-    if not os.path.exists(path):
-        raise RuntimeError(f'{path} does not exist.')
+devtools_path = os.path.join(os.path.dirname(__file__), 'devtools')
+if os.path.exists(devtools_path):
+    @app.cli.command()
+    @click.argument('commands', nargs=-1)
+    def dev(commands):
+        """Create & destroy dummy db objects"""
+        # https://click.palletsprojects.com/en/7.x/arguments/
+        from config import basedir
+        path = basedir+'/devtools'
+        if not os.path.exists(path):
+            raise RuntimeError(f'{path} does not exist.')
 
-    from devtools import fake
-    if not commands:
-        click.echo('Usage: flask dev COMMAND...')
-        click.echo("Try 'flask dev help' for help.")
-        click.echo('')
-    else:
-        fake.run(commands)
+        from devtools import fake
+        from devtools import load_township_assets
+        if not commands:
+            click.echo('Usage: flask dev COMMAND...')
+            click.echo("Try 'flask dev help' for help.")
+            click.echo('')
+        else:
+            # fake.run(commands)
+            load_township_assets.run(commands)
