@@ -11,7 +11,7 @@ from ..decorators import admin_required
 from ..models.township import Source, Item, Town, Unlock
 
 @township.route('/home')
-# @admin_required
+@login_required
 def landing():
     if not current_user.town:
         # TODO: possibly redirect to register-town page
@@ -27,7 +27,7 @@ def landing():
                             town=current_user.town, unlock=unlock)
 
 @township.route('/source/<source_name>')
-# @admin_required
+@login_required
 def source(source_name):
     source = Source.query.filter_by(name=source_name).first()
     return render_template('township/source.html', source=source)
@@ -35,7 +35,7 @@ def source(source_name):
 
 
 @township.route('/item/<item_name>')
-# @admin_required
+@login_required
 def item(item_name):
     item = Item.query.filter_by(name=item_name).first()
     ingredients = [
@@ -66,7 +66,7 @@ def item(item_name):
 
 
 @township.route('/source/<source_name>/popup')
-# @admin_required
+@login_required
 def source_popup(source_name):
     source = Source.query.filter_by(name=source_name).first_or_404()
     return render_template('township/source_popup.html',
@@ -74,13 +74,13 @@ def source_popup(source_name):
                 name=source_name, source=source)
 
 @township.route('/item/<item_name>/popup')
-# @admin_required
+@login_required
 def item_popup(item_name):
     return render_template('township/item_popup.html',
                 user=current_user, name=item_name)
 
 @township.route('/register-town', methods=['GET', 'POST'])
-# @admin_required
+@login_required
 def register_town():
     # if user has town already, redirect to .landing
     if current_user.town is not None:
@@ -102,7 +102,7 @@ def register_town():
     return render_template('township/register_town.html', form=form)
 
 @township.route('/edit-town/', methods=['GET', 'POST'])
-# @admin_required
+@login_required
 def edit_town():
     town = Town.query.get_or_404(current_user.id)
     form = EditTownForm()
