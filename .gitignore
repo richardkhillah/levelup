@@ -2,7 +2,7 @@ __pycache__
 venv
 
 *.sqlite
-
+*.dump
 references.md
 
 .env
