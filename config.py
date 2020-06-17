@@ -29,9 +29,10 @@ class DevelopmentConfig(Config):
     SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
         'sqlite:///' + os.path.join(basedir, 'data-dev.sqlite')
     SQLALCHEMY_BINDS = {
-        'township_data': os.environ.get('TOWNSHIP_DATABASE_URL') or \
-            'sqlite:///' + os.path.join(basedir, 'township-data.sqlite'),
-        'user_data': SQLALCHEMY_DATABASE_URI,
+        'township_data': os.environ.get('DEV_TOWNSHIP_DATABASE_URL') or \
+            'sqlite:///' + os.path.join(basedir, 'township-data-dev.sqlite'),
+        'user_data': os.environ.get('DEV_USERS_DATABASE_URL') or \
+            'sqlite:///' + os.path.join(basedir, 'users-data-dev.sqlite'),
     }
 
 class TestingConfig(Config):
@@ -43,7 +44,12 @@ class TestingConfig(Config):
 class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
         'sqlite:///' + os.path.join(basedir, 'data.sqlite')
-
+    SQLALCHEMY_BINDS = {
+        'township_data': os.environ.get('TOWNSHIP_DATABASE_URL') or \
+            'sqlite:///' + os.path.join(basedir, 'township-data.sqlite'),
+        'user_data': os.environ.get('USERS_DATABASE_URL') or \
+            'sqlite:///' + os.path.join(basedir, 'users-data.sqlite'),
+    }
     @classmethod
     def init_app(cls, app):
         Config.init_app(app)
