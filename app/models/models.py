@@ -11,6 +11,7 @@ import bleach
 
 class Role(db.Model):
     __tablename__ = 'roles'
+    __bind_key__ = 'user_data'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True)
     default = db.Column(db.Boolean, default=False, index=True)
@@ -50,6 +51,7 @@ class Permission:
 
 class Follow(db.Model):
     __tablename__ = 'follows'
+    __bind_key__ = 'user_data'
     # follower_id is an integer primary key referencing a user id
     follower_id = db.Column(db.Integer, db.ForeignKey('users.id'),
                             primary_key=True)
@@ -63,6 +65,7 @@ class Follow(db.Model):
 
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
+    __bind_key__ = 'user_data'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), unique=True, index=True)
     email = db.Column(db.String(64), unique=True, index=True)
@@ -268,6 +271,7 @@ def load_user(user_id):
 
 class Post(db.Model):
     __tablename__='posts'
+    __bind_key__ = 'user_data'
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.Text)
     body_html = db.Column(db.Text)
@@ -288,6 +292,7 @@ db.event.listen(Post.body, 'set', Post.on_changed_body)
 
 class Comment(db.Model):
     __tablename__='comments'
+    __bind_key__ = 'user_data'
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.Text)
     body_html = db.Column(db.Text)
