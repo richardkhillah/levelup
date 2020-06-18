@@ -28,6 +28,12 @@ class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
         'sqlite:///' + os.path.join(basedir, 'data-dev.sqlite')
+    SQLALCHEMY_BINDS = {
+        'township_data': os.environ.get('DEV_TOWNSHIP_DATABASE_URL') or \
+            'sqlite:///' + os.path.join(basedir, 'township-data-dev.sqlite'),
+        'user_data': os.environ.get('DEV_USERS_DATABASE_URL') or \
+            'sqlite:///' + os.path.join(basedir, 'users-data-dev.sqlite'),
+    }
 
 class TestingConfig(Config):
     TESTING = True
@@ -38,7 +44,12 @@ class TestingConfig(Config):
 class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
         'sqlite:///' + os.path.join(basedir, 'data.sqlite')
-
+    SQLALCHEMY_BINDS = {
+        'township_data': os.environ.get('TOWNSHIP_DATABASE_URL') or \
+            'sqlite:///' + os.path.join(basedir, 'township-data.sqlite'),
+        'user_data': os.environ.get('USERS_DATABASE_URL') or \
+            'sqlite:///' + os.path.join(basedir, 'users-data.sqlite'),
+    }
     @classmethod
     def init_app(cls, app):
         Config.init_app(app)
@@ -64,6 +75,13 @@ class ProductionConfig(Config):
 
 class HerokuConfig(ProductionConfig):
     SSL_REDIRECT = True if os.environ.get('DYNO') else False
+    SQLALCHEMY_BINDS = {
+        'township_data': os.environ.get('DATABASE_URL') or \
+            'sqlite:///' + os.path.join(basedir, 'township-data.sqlite'),
+        'user_data': os.environ.get('HEROKU_POSTGRESQL_AMBER_URL') or \
+            'sqlite:///' + os.path.join(basedir, 'users-data.sqlite'),
+    }
+
     @classmethod
     def init_app(cls, app):
         ProductionConfig.init_app(app)
@@ -80,12 +98,23 @@ class HerokuConfig(ProductionConfig):
         app.logger.addHandler(file_handler)
 
 
+class HerokuConfigStaging(HerokuConfig):
+    SQLALCHEMY_BINDS = {
+        'township_data': os.environ.get('DATABASE_URL') or \
+            os.environ.get('DEV_TOWNSHIP_DATABASE_URL') or \
+            'sqlite:///' + os.path.join(basedir, 'township-data.sqlite'),
+        'user_data': os.environ.get('HEROKU_POSTGRESQL_BLUE_URL') or \
+            os.environ.get('DEV_USERS_DATABASE_URL') or \
+            'sqlite:///' + os.path.join(basedir, 'users-data.sqlite'),
+    }
+
 # Register configurations
 config = {
     'development': DevelopmentConfig,
     'testing': TestingConfig,
     'production': ProductionConfig,
     'heroku': HerokuConfig,
+    'heroku_staging': HerokuConfigStaging,
 
     'default': DevelopmentConfig
 }
