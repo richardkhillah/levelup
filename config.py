@@ -75,6 +75,13 @@ class ProductionConfig(Config):
 
 class HerokuConfig(ProductionConfig):
     SSL_REDIRECT = True if os.environ.get('DYNO') else False
+    SQLALCHEMY_BINDS = {
+        'township_data': os.environ.get('DATABASE_URL') or \
+            'sqlite:///' + os.path.join(basedir, 'township-data.sqlite'),
+        'user_data': os.environ.get('HEROKU_POSTGRESQL_AMBER_URL') or \
+            'sqlite:///' + os.path.join(basedir, 'users-data.sqlite'),
+    }
+
     @classmethod
     def init_app(cls, app):
         ProductionConfig.init_app(app)
@@ -94,8 +101,10 @@ class HerokuConfig(ProductionConfig):
 class HerokuConfigStaging(HerokuConfig):
     SQLALCHEMY_BINDS = {
         'township_data': os.environ.get('DATABASE_URL') or \
+            os.environ.get('DEV_TOWNSHIP_DATABASE_URL') or \
             'sqlite:///' + os.path.join(basedir, 'township-data.sqlite'),
         'user_data': os.environ.get('HEROKU_POSTGRESQL_BLUE_URL') or \
+            os.environ.get('DEV_USERS_DATABASE_URL') or \
             'sqlite:///' + os.path.join(basedir, 'users-data.sqlite'),
     }
 
