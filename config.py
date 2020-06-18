@@ -91,12 +91,21 @@ class HerokuConfig(ProductionConfig):
         app.logger.addHandler(file_handler)
 
 
+class HerokuConfigStaging(HerokuConfig):
+    SQLALCHEMY_BINDS = {
+        'township_data': os.environ.get('DATABASE_URL') or \
+            'sqlite:///' + os.path.join(basedir, 'township-data.sqlite'),
+        'user_data': os.environ.get('HEROKU_POSTGRESQL_BLUE_URL') or \
+            'sqlite:///' + os.path.join(basedir, 'users-data.sqlite'),
+    }
+
 # Register configurations
 config = {
     'development': DevelopmentConfig,
     'testing': TestingConfig,
     'production': ProductionConfig,
     'heroku': HerokuConfig,
+    'heroku_staging': HerokuConfigStaging,
 
     'default': DevelopmentConfig
 }
