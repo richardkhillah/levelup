@@ -108,6 +108,10 @@ class HerokuConfigStaging(HerokuConfig):
             'sqlite:///' + os.path.join(basedir, 'users-data.sqlite'),
     }
 
+    @classmethod
+    def init_app(cls, app):
+        HerokuConfig.init_app(app)
+
 # Register configurations
 config = {
     'development': DevelopmentConfig,
