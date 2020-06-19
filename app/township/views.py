@@ -105,7 +105,7 @@ def register_town():
 @township.route('/edit-town/', methods=['GET', 'POST'])
 @login_required
 def edit_town():
-    town = Town.query.get_or_404(current_user.id)
+    town = Town.query.get_or_404(current_user.town.id)
     form = EditTownForm()
     if form.validate_on_submit():
         town.name = form.town_name.data
