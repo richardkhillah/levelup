@@ -8,7 +8,8 @@ from .. import db
 from ..models.models import User
 from ..decorators import admin_required
 
-from ..models.township import Source, Item, Town, Unlock
+from ..models.township import Source, Item, Unlock
+from ..models.models import Town
 
 @township.route('/home')
 @login_required

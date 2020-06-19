@@ -1,6 +1,5 @@
 from .. import db
 from sqlalchemy import func
-from .models import User
 
 class BaseA(db.Model):
     __abstract__ = True
@@ -151,28 +150,6 @@ item = {
     # 'gem': Gem
 }
 
-from .models import User
-class Town(db.Model):
-    __tablename__ = 'town'
-    __bind_key__ = 'user_data'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(64))
-    level = db.Column(db.Integer, default=1)
-    population = db.Column(db.Integer)
-    population_cap = db.Column(db.Integer)
-    coins = db.Column(db.Integer)
-    township_cash = db.Column(db.Integer)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-
-    # sources = db.relationship('Source', backref='town')
-    # source_stats = db.relationship('SourceStat', backref='town')
-
-    def available_sources(self):
-        return Source.query.filter(self.level >= Source.required_level)
-
-    def purchase_source(self, source):
-        pass
-
 class Unlock:
     def __init__(self, level=None, sources=None, items=None):
         self.level = level
@@ -208,6 +185,4 @@ tm_dict = dict(
     Island=Island,
     Material=Material,
     Foundry=Foundry,
-
-    Town=Town,
 )

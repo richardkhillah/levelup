@@ -269,6 +269,28 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
+class Town(db.Model):
+    __tablename__ = 'town'
+    __bind_key__ = 'user_data'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64))
+    level = db.Column(db.Integer, default=1)
+    population = db.Column(db.Integer)
+    population_cap = db.Column(db.Integer)
+    coins = db.Column(db.Integer)
+    township_cash = db.Column(db.Integer)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+    # sources = db.relationship('Source', backref='town')
+    # source_stats = db.relationship('SourceStat', backref='town')
+
+    def available_sources(self):
+        return Source.query.filter(self.level >= Source.required_level)
+
+    def purchase_source(self, source):
+        pass
+
+
 class Post(db.Model):
     __tablename__='posts'
     __bind_key__ = 'user_data'
