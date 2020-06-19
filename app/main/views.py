@@ -4,7 +4,7 @@ from flask_login import login_required, current_user
 from flask_sqlalchemy import get_debug_queries
 from flask import current_app, abort
 from .forms import EditProfileForm, EditProfileAdminForm
-from .forms import PostForm, CommentForm
+from ..blog.forms import PostForm, CommentForm
 
 from datetime import datetime
 
