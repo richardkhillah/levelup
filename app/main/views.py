@@ -12,7 +12,8 @@ from datetime import datetime
 from . import main
 # from .forms import NameForm
 from .. import db
-from ..models.models import User, Role, Permission, Post, Comment, Town
+from ..models.models import User, Role, Permission, Town
+from ..models.blog import Post, Comment
 from ..models.township import Source, Item, Unlock
 from ..email import send_email
 from ..decorators import admin_required, permission_required

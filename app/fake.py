@@ -2,7 +2,8 @@ from random import randint
 from sqlalchemy.exc import IntegrityError
 from faker import Faker
 from . import db
-from .models.models import User, Post
+from .models.models import User
+from .models.blog import Post
 from .models.township import source, item, Source, Farming, Imported
 
 fake = Faker()
