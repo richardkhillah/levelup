@@ -9,6 +9,8 @@ import hashlib
 from markdown import markdown
 import bleach
 
+from app.models.blog import Post, Comment
+
 class Role(db.Model):
     __tablename__ = 'roles'
     __bind_key__ = 'user_data'
