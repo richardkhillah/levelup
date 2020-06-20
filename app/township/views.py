@@ -8,24 +8,7 @@ from .. import db
 from ..models.models import User
 from ..decorators import admin_required
 
-from ..models.township import Source, Item, Unlock
-from ..models.models import Town
-
-@township.route('/home')
-@login_required
-def landing():
-    if not current_user.town:
-        # TODO: possibly redirect to register-town page
-        abort(404)
-    # TODO: encapsulate this in Town with some method, refactor landing.html
-    unlock = Unlock()
-    unlock.level = current_user.town.level + 1
-    unlock.sources = Source.query.filter_by(required_level=unlock.level).all()
-    unlock.items = Item.query.filter_by(required_level=unlock.level).all()
-
-    return render_template('township/landing.html',
-                            user=current_user._get_current_object(),
-                            town=current_user.town, unlock=unlock)
+from ..models.township import Source, Item
 
 
 @township.route('/source/<source_name>')

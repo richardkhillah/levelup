@@ -10,9 +10,10 @@ from ..blog.forms import PostForm, CommentForm
 from datetime import datetime
 
 from . import main
-from .forms import NameForm
+# from .forms import NameForm
 from .. import db
 from ..models.models import User, Role, Permission, Post, Comment, Town
+from ..models.township import Source, Item, Unlock
 from ..email import send_email
 from ..decorators import admin_required, permission_required
 
@@ -38,6 +39,15 @@ def server_shutdown():
 
 @main.route('/', methods=['GET', 'POST'])
 def index():
+    unlock = Unlock()
+    if current_user.is_authenticated and current_user.town:
+        unlock.level = current_user.town.level + 1
+        unlock.sources = Source.query.filter_by(required_level=unlock.level).all()
+        unlock.items = Item.query.filter_by(required_level=unlock.level).all()
+    else:
+        unlock = None
+
+    # This is all blog stuff
     form = PostForm()
     if current_user.can(Permission.WRITE_ARTICLES) and \
             form.validate_on_submit():
@@ -59,7 +69,9 @@ def index():
         page, per_page=int(current_app.config['LEVELUP_POSTS_PER_PAGE']),
         error_out=False)
     posts = pagination.items
-    return render_template('index.html',
+    # end blog stuff
+
+    return render_template('index.html', unlock=unlock,
                             form=form, posts=posts, pagination=pagination)
 
 @main.route('/all')
