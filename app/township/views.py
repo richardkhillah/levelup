@@ -10,6 +10,14 @@ from ..decorators import admin_required
 
 from ..models.township import Source, Item
 
+@township.route('/items')
+def items():
+    return render_template('township/items.html')
+
+@township.route('/sources')
+def sources():
+    return render_template('township/sources.html')
+
 
 @township.route('/source/<source_name>')
 @login_required
