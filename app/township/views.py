@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 from flask import current_app, abort
 
 from . import township
-from .forms import NewTownForm, EditTownForm
+
 from .. import db
 from ..models.models import User
 from ..decorators import admin_required
@@ -27,52 +27,6 @@ def landing():
                             user=current_user._get_current_object(),
                             town=current_user.town, unlock=unlock)
 
-@township.route('/register-town', methods=['GET', 'POST'])
-@login_required
-def register_town():
-    # if user has town already, redirect to .landing
-    if current_user.town is not None:
-        return redirect(url_for('.landing'))
-
-    form = NewTownForm()
-    if form.validate_on_submit():
-        town = Town(name=form.town_name.data,
-                    level=form.level.data,
-                    population=form.population.data,
-                    population_cap=form.population_cap.data,
-                    coins=form.coins.data,
-                    township_cash=form.township_cash.data)
-        town.owner = current_user
-        db.session.add(town)
-        db.session.commit()
-
-        flash('Form Submitted')
-        return redirect(url_for('.landing'))
-    return render_template('township/register_town.html', form=form)
-
-@township.route('/edit-town/', methods=['GET', 'POST'])
-@login_required
-def edit_town():
-    town = Town.query.get_or_404(current_user.town.id)
-    form = EditTownForm()
-    if form.validate_on_submit():
-        town.name = form.town_name.data
-        town.level = form.level.data
-        town.population = form.population.data
-        town.population_cap = form.population_cap.data
-        town.coins = form.coins.data
-        town.township_cash = form.township_cash.data
-        db.session.add(town)
-        db.session.commit()
-        flash("Success! Your town has been updated.")
-        return redirect(url_for('.landing'))
-    form.town_name.data = town.name
-    form.level.data = town.level
-    form.population.data = town.population
-    form.population_cap.data = town.population_cap
-    form.coins.data = town.coins
-    form.township_cash.data = town.township_cash
-    return render_template('township/edit_town.html', form=form)
 
 @township.route('/source/<source_name>')
 @login_required

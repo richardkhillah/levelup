@@ -16,7 +16,7 @@
     {% if current_user.town %}
         (<a href="{{ url_for('township.landing') }}">Go to my town</a>)
     {% elif not current_user.is_anonymous %}
-    (<a href="{{ url_for('township.register_town') }}">Add a town</a>)
+    (<a href="{{ url_for('main.register_town') }}">Add a town</a>)
     {% endif %}
 </div>
 <div>

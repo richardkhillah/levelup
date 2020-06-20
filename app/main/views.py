@@ -4,6 +4,7 @@ from flask_login import login_required, current_user
 from flask_sqlalchemy import get_debug_queries
 from flask import current_app, abort
 from .forms import EditProfileForm, EditProfileAdminForm
+from .forms import NewTownForm, EditTownForm
 from ..blog.forms import PostForm, CommentForm
 
 from datetime import datetime
@@ -11,7 +12,7 @@ from datetime import datetime
 from . import main
 from .forms import NameForm
 from .. import db
-from ..models.models import User, Role, Permission, Post, Comment
+from ..models.models import User, Role, Permission, Post, Comment, Town
 from ..email import send_email
 from ..decorators import admin_required, permission_required
 
@@ -293,3 +294,50 @@ def followed_by(username):
     return render_template('followers.html', title="Followers of ",
                 endpoint='.followers', pagination=pagination,
                 user=user, follows=follows)
+
+@main.route('/register-town', methods=['GET', 'POST'])
+@login_required
+def register_town():
+    # if user has town already, redirect to .landing
+    if current_user.town is not None:
+        return redirect(url_for('.index'))
+
+    form = NewTownForm()
+    if form.validate_on_submit():
+        town = Town(name=form.town_name.data,
+                    level=form.level.data,
+                    population=form.population.data,
+                    population_cap=form.population_cap.data,
+                    coins=form.coins.data,
+                    township_cash=form.township_cash.data)
+        town.owner = current_user
+        db.session.add(town)
+        db.session.commit()
+
+        flash('Form Submitted')
+        return redirect(url_for('.index'))
+    return render_template('register_town.html', form=form)
+
+@main.route('/edit-town/', methods=['GET', 'POST'])
+@login_required
+def edit_town():
+    town = Town.query.get_or_404(current_user.town.id)
+    form = EditTownForm()
+    if form.validate_on_submit():
+        town.name = form.town_name.data
+        town.level = form.level.data
+        town.population = form.population.data
+        town.population_cap = form.population_cap.data
+        town.coins = form.coins.data
+        town.township_cash = form.township_cash.data
+        db.session.add(town)
+        db.session.commit()
+        flash("Success! Your town has been updated.")
+        return redirect(url_for('.index'))
+    form.town_name.data = town.name
+    form.level.data = town.level
+    form.population.data = town.population
+    form.population_cap.data = town.population_cap
+    form.coins.data = town.coins
+    form.township_cash.data = town.township_cash
+    return render_template('edit_town.html', form=form)
