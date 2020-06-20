@@ -10,7 +10,6 @@ from ..blog.forms import PostForm
 from datetime import datetime
 
 from . import main
-# from .forms import NameForm
 from .. import db
 from ..models.models import User, Role, Permission, Town
 from ..models.blog import Post
@@ -38,7 +37,7 @@ def server_shutdown():
     shutdown()
     return 'Shutting down...'
 
-@main.route('/', methods=['GET', 'POST'])
+@main.route('/')
 def index():
     unlock = Unlock()
     if current_user.is_authenticated and current_user.town:
@@ -48,32 +47,9 @@ def index():
     else:
         unlock = None
 
-    # This is all blog stuff
-    form = PostForm()
-    if current_user.can(Permission.WRITE_ARTICLES) and \
-            form.validate_on_submit():
-        post = Post(body=form.body.data,
-                    author=current_user._get_current_object())
-        db.session.add(post)
-        db.session.commit()
-        return redirect(url_for('.index'))
 
-    page = request.args.get('page', 1, type=int)
-    show_followed = False
-    if current_user.is_authenticated:
-        show_followed = bool(request.cookies.get('show_followed', ''))
-    if show_followed:
-        query = current_user.followed_posts
-    else:
-        query = Post.query
-    pagination = query.order_by(Post.timestamp.desc()).paginate(
-        page, per_page=int(current_app.config['LEVELUP_POSTS_PER_PAGE']),
-        error_out=False)
-    posts = pagination.items
-    # end blog stuff
 
-    return render_template('index.html', unlock=unlock,
-                            form=form, posts=posts, pagination=pagination)
+    return render_template('index.html', unlock=unlock)
 
 @main.route('/user/<username>')
 def user(username):
