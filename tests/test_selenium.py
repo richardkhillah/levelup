@@ -4,7 +4,8 @@ import time
 import unittest
 from selenium import webdriver
 from app import create_app, db, fake
-from app.models.models import Role, User, Post
+from app.models.models import Role, User
+from app.models.blog import Post
 
 
 class SeleniumTestCase(unittest.TestCase):
