@@ -27,7 +27,7 @@
             cash: {{ current_user.town.township_cash }} <br>
         </p>
     </div>
-
+    <hr>
     <p>
         next level: {{ unlock.level }} <br>
         total construction cost: {{ unlock.construction_cost }} coins <br>
@@ -35,62 +35,11 @@
     </p>
     <div class="list-group">
         {% if unlock.sources %}
-        <p><strong>Sources:</strong></p>
-        <table class="table">
-            <thead class="thead-dark">
-                <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col">Construction Time</th>
-                    <th scope="col">Construction Cost</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- this will change to use item.<some-list-name> -->
-                {% for s in unlock.sources %}
-                <tr>
-                    <th scope="row"><a href="{{ url_for('township.source', source_name=s.name)}}">
-                        {{ s.name }}</a></th>
-                    <td>{{ s.time_to_make }}</td>
-                    <td>{{ s.purchase_cost }}</td>
-                <tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        {% include "township/_sources.html" %}
         {% endif %}
 
         {% if unlock.items %}
-        <p><strong>Items:</strong></p>
-        <table class="table">
-            <thead class="thead-dark">
-                <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col">Produced at</th>
-                    <th scope="col">Time to Produce</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- this will change to use item.<some-list-name> -->
-                {% for i in unlock.items %}
-                <tr>
-                    <th scope="row">
-                        <a href="{{ url_for('township.item', item_name=i.name) }}"
-                            class="list-group-item list-group-item-action">
-                            {{ i.name }}
-                        </a>
-                    </th>
-                    {% if i.source.name %}
-                    <td>
-                        <a href="{{ url_for('township.source', source_name=i.source.name)}}">
-                            {{ i.source.name }}</a>
-                    </td>
-                    {% else %}
-                    <td>sorry.. still working on that</td>
-                    {% endif %}
-                    <td>{{ i.time_to_make }}</td>
-                <tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        {% include "township/_items.html" %}
         {% endif %}
     </div>
 
