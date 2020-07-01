@@ -39,4 +39,7 @@ def create_app(config_name):
     from .township import township as township_blueprint
     app.register_blueprint(township_blueprint, url_prefix='/township')
 
+    from .blog import blog as blog_blueprint
+    app.register_blueprint(blog_blueprint, url_prefix='/blog')
+
     return app

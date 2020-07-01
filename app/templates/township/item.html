@@ -5,7 +5,7 @@
 {% block page_content %}
 <!-- TODO: township nav here -->
 <section class="container">
-    <a href="{{ url_for('township.landing') }}">Back to {{ current_user.town.name }}</a>
+    <a href="{{ url_for('main.index') }}">Back to {{ current_user.town.name }}</a>
     <h1>{{ item.name }}</h1>
 </section>
 

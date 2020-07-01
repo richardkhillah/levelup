@@ -6,7 +6,7 @@
 
 {% block page_content %}
 <section class="container">
-    <a href="{{ url_for('township.landing') }}">Back to {{ current_user.town.name }}</a>
+    <a href="{{ url_for('main.index') }}">Back to {{ current_user.town.name }}</a>
     <h1>{{ source.name }}</h1>
     <p>Unlocked at level: {{ source.required_level }}</p>
     <p>Construction Cost: {{ source.purchase_cost }}</p>

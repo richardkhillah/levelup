@@ -1,8 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, TextField
-from wtforms import SelectField, BooleanField
-from wtforms.validators import DataRequired, Length, Email, Regexp
-from flask_pagedown.fields import PageDownField
+from wtforms import SelectField, BooleanField, IntegerField
+from wtforms.validators import DataRequired, Length, Email, Regexp, NumberRange
 from ..models.models import Role
 
 class NameForm(FlaskForm):
@@ -45,10 +44,32 @@ class EditProfileAdminForm(FlaskForm):
                 User.query.filter_by(username=field.data).first():
             raise ValidationError('Username already in use.')
 
-class PostForm(FlaskForm):
-    body = PageDownField("What's on your mind?", validators=[DataRequired()])
+class NewTownForm(FlaskForm):
+    town_name = StringField('Town Name', \
+        validators=[DataRequired(), Length(1, 64)])
+    level = IntegerField('Level', \
+        validators=[DataRequired(), NumberRange(min=1)])
+    population = IntegerField('Population', \
+        validators=[DataRequired(), NumberRange(1, 22775)])
+    population_cap = IntegerField('Population Cap', \
+        validators=[DataRequired(), NumberRange(1, 22775)])
+    coins = IntegerField('Coins', \
+        validators=[DataRequired(), NumberRange(min=0)])
+    township_cash = IntegerField('Township Cash', \
+        validators=[DataRequired(), NumberRange(min=0)])
     submit = SubmitField('Submit')
 
-class CommentForm(FlaskForm):
-    body = StringField('', validators=[DataRequired()])
+class EditTownForm(FlaskForm):
+    town_name = StringField('Town Name', \
+        validators=[DataRequired(), Length(1, 64)])
+    level = IntegerField('Level', \
+        validators=[DataRequired(), NumberRange(min=1)])
+    population = IntegerField('Population', \
+        validators=[DataRequired(), NumberRange(1, 22775)])
+    population_cap = IntegerField('Population Cap', \
+        validators=[DataRequired(), NumberRange(1, 22775)])
+    coins = IntegerField('Coins', \
+        validators=[DataRequired(), NumberRange(min=0)])
+    township_cash = IntegerField('Township Cash', \
+        validators=[DataRequired(), NumberRange(min=0)])
     submit = SubmitField('Submit')

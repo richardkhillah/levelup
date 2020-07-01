@@ -8,39 +8,100 @@
 <div class="page-header">
     <h1>Hello,
         {% if current_user.is_authenticated %}
+        {% if current_user.town %}
+        <a href="{{ url_for('main.edit_town')}}">{{ current_user.town.name }}</a>
+        {% else %}
         {{ current_user.username }}
+        {% endif %}
         {% else %}
         Stranger
-        {% endif %}!
+        {% endif %}
     </h1>
     {% if current_user.town %}
-        (<a href="{{ url_for('township.landing') }}">Go to my town</a>)
-    {% elif not current_user.is_anonymous %}
-    (<a href="{{ url_for('township.register_town') }}">Add a town</a>)
-    {% endif %}
-</div>
-<div>
-    {% if current_user.can(Permission.WRITE_ARTICLES) %}
-    {{ wtf.quick_form(form) }}
-    {% endif %}
-</div>
-<div class="post-tabs">
-    <ul class="nav nav-tabs">
-        <li{% if not show_followed %} class="active"{% endif %}><a href="{{ url_for('.show_all') }}">All</a></li>
-        {% if current_user.is_authenticated %}
-        <li{% if show_followed %} class="active"{% endif %}><a href="{{ url_for('.show_followed') }}">Followers</a></li>
+    <div>
+        <p>
+            level: {{ current_user.town.level }}<br>
+            population: {{ current_user.town.population }} <br>
+            population cap: {{ current_user.town.population_cap }} <br>
+            coins: {{ current_user.town.coins }} <br>
+            cash: {{ current_user.town.township_cash }} <br>
+        </p>
+    </div>
+    <hr>
+    <p>
+        next level: {{ unlock.level }} <br>
+        total construction cost: {{ unlock.construction_cost }} coins <br>
+        Unlock items:
+    </p>
+    <div class="list-group">
+        {% if unlock.sources %}
+        {% include "township/_sources.html" %}
         {% endif %}
-    </ul>
-    {% include '_posts.html' %}
+
+        {% if unlock.items %}
+        {% include "township/_items.html" %}
+        {% endif %}
+    </div>
+
+    {% elif not current_user.is_anonymous %}
+    (<a href="{{ url_for('main.register_town') }}">Add a town</a>)
+    {% endif %}
 </div>
-{% if pagination %}
-<div class="pagination">
-    {{ macros.pagination_widget(pagination, '.index') }}
-</div>
-{% endif %}
 {% endblock %}
 
 {% block scripts %}
 {{ super() }}
 {{ pagedown.include_pagedown() }}
+<script>
+    $(function() {
+        // want a list of dicts to apply this method to
+        $('.source_popup').hover(
+            // mouse in event handler
+            function(event) {
+                var elem = $(event.currentTarget);
+                timer = setTimeout(function() {
+                    timer = null;
+                    // get the html element to insert into the popover
+                    xhr = $.ajax(
+                        '/township/source/' + elem.first().text().trim() + '/popup').done(
+                            // create the popup
+                            function(data) {
+                                // clear response so it doesn't interever with other popovers
+                                xhr = null;
+                                // inject the html into the popup
+                                elem.popover({
+                                    trigger: 'manual',
+                                    html: true,
+                                    animation: false,
+                                    container: elem,
+                                    content: data,
+                                    placement: 'auto'
+                                // finally sho the popup
+                                }).popover('show');
+                            }
+                        );
+                }, 1000);
+            },
+            // mouse out event handler
+            function(event) {
+                var elem = $(event.currentTarget);
+                if (timer) {
+                    clearTimeout(timer);
+                    timer = null;
+                }
+                else if (xhr) {
+                    xhr.abort();
+                    xhr = null;
+                }
+                else {
+                    elem.popover('destroy');
+                }
+            }
+        )
+    });
+</script>
 {% endblock %}
+
+<!-- https://pietschsoft.com/post/2015/09/05/javascript-basics-how-to-create-a-dictionary-with-keyvalue-pairs -->
+<!-- https://stackoverflow.com/questions/13378051/how-to-select-find-an-element-inside-an-event-currenttarget-in-jquery -->
+<!-- https://stackoverflow.com/questions/11238508/how-to-get-value-of-a-div-using-javascript -->

@@ -9,6 +9,8 @@ import hashlib
 from markdown import markdown
 import bleach
 
+from app.models.blog import Post, Comment
+
 class Role(db.Model):
     __tablename__ = 'roles'
     __bind_key__ = 'user_data'
@@ -60,8 +62,6 @@ class Follow(db.Model):
                             primary_key=True)
     # timestamp is a DateTime object set to utcnow at the time of creating row
     timestamp = db.Column(db.DateTime(), default=datetime.utcnow)
-
-
 
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
@@ -269,44 +269,23 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
-class Post(db.Model):
-    __tablename__='posts'
+class Town(db.Model):
+    __tablename__ = 'town'
     __bind_key__ = 'user_data'
     id = db.Column(db.Integer, primary_key=True)
-    body = db.Column(db.Text)
-    body_html = db.Column(db.Text)
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-    author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    comments = db.relationship('Comment', backref='post', lazy='dynamic')
+    name = db.Column(db.String(64))
+    level = db.Column(db.Integer, default=1)
+    population = db.Column(db.Integer)
+    population_cap = db.Column(db.Integer)
+    coins = db.Column(db.Integer)
+    township_cash = db.Column(db.Integer)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-    @staticmethod
-    def on_changed_body(target, value, oldvalue,initiator):
-        allowed_tags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code',
-                        'em', 'i', 'li', 'ol', 'pre', 'strong', 'ul',
-                        'h1', 'h2', 'h3', 'p']
-        target.body_html = bleach.linkify(bleach.clean(
-            markdown(value, output_format='html'),
-            tags=allowed_tags, strip=True))
+    # sources = db.relationship('Source', backref='town')
+    # source_stats = db.relationship('SourceStat', backref='town')
 
-db.event.listen(Post.body, 'set', Post.on_changed_body)
+    def available_sources(self):
+        return Source.query.filter(self.level >= Source.required_level)
 
-class Comment(db.Model):
-    __tablename__='comments'
-    __bind_key__ = 'user_data'
-    id = db.Column(db.Integer, primary_key=True)
-    body = db.Column(db.Text)
-    body_html = db.Column(db.Text)
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-    disabled = db.Column(db.Boolean)
-    author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
-
-    @staticmethod
-    def on_changed_body(target, value, oldvalue,initiator):
-        allowed_tags = ['a', 'abbr', 'acronym', 'b', 'code', 'em', 'i',
-                        'strong']
-        target.body_html = bleach.linkify(bleach.clean(
-            markdown(value, output_format='html'),
-            tags=allowed_tags, strip=True))
-
-db.event.listen(Comment.body, 'set', Comment.on_changed_body)
+    def purchase_source(self, source):
+        pass
